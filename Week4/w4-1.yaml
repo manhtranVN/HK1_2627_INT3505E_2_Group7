@@ -1,0 +1,344 @@
+openapi: 3.0.3
+info:
+  title: Tasks API
+  version: 1.0.0
+  description: Internal task management API
+  contact:
+    name: API Team
+    email: api@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000/v1
+    description: Local development server
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: tasks
+    description: CRUD operations for managing internal tasks
+
+paths:
+  /tasks:
+    get:
+      summary: List tasks
+      description: Returns a paginated list of tasks with optional status filter
+      operationId: listTasks
+      tags:
+        - tasks
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/StatusFilter'
+      responses:
+        '200':
+          $ref: '#/components/responses/TaskPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      summary: Create a new task
+      description: Create a new task for the current user
+      operationId: createTask
+      tags:
+        - tasks
+      requestBody:
+        required: true
+        description: Request body for creating a task
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskInput'
+            example:
+              title: "API team meeting"
+              priority: "high"
+              dueDate: "2026-10-15"
+              assigneeId: "user-123"
+      responses:
+        '201':
+          $ref: '#/components/responses/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /tasks/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: Unique identifier (UUID) of the task
+        schema:
+          type: string
+          format: uuid
+        example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+
+    get:
+      summary: Get task details
+      description: Returns detailed information of a task by ID
+      operationId: getTaskById
+      tags:
+        - tasks
+      responses:
+        '200':
+          $ref: '#/components/responses/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: Partially update a task
+      description: Updates one or more fields of a task by ID
+      operationId: patchTask
+      tags:
+        - tasks
+      requestBody:
+        required: true
+        description: Fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskInput'
+            example:
+              status: "done"
+              priority: "normal"
+      responses:
+        '200':
+          $ref: '#/components/responses/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      summary: Delete a task
+      description: Permanently deletes a task by ID from the system
+      operationId: deleteTask
+      tags:
+        - tasks
+      responses:
+        '204':
+          description: Successfully deleted, no content returned (No Content)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Authenticate user using JWT Bearer token
+
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: Maximum number of records returned per page
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    StatusFilter:
+      name: status
+      in: query
+      description: Filter list by task status
+      required: false
+      schema:
+        type: string
+        enum:
+          - open
+          - done
+
+  schemas:
+    Task:
+      type: object
+      description: Complete task data model
+      required:
+        - id
+        - title
+        - status
+        - priority
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        title:
+          type: string
+          minLength: 1
+          example: "Complete OpenAPI documentation"
+        status:
+          type: string
+          enum:
+            - open
+            - done
+          example: "open"
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+          example: "high"
+        dueDate:
+          type: string
+          format: date
+          example: "2026-10-30"
+        assigneeId:
+          type: string
+          example: "user-123"
+
+    CreateTaskInput:
+      type: object
+      description: Input payload for creating a new task
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          example: "Write Lab 4 exercises"
+        status:
+          type: string
+          enum:
+            - open
+            - done
+          default: open
+          example: "open"
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+          default: normal
+          example: "high"
+        dueDate:
+          type: string
+          format: date
+          example: "2026-10-30"
+        assigneeId:
+          type: string
+          example: "user-123"
+
+    UpdateTaskInput:
+      type: object
+      description: Input payload for partially updating a task (PATCH)
+      properties:
+        title:
+          type: string
+          minLength: 1
+          example: "Update documentation"
+        status:
+          type: string
+          enum:
+            - open
+            - done
+          example: "done"
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+          example: "normal"
+        dueDate:
+          type: string
+          format: date
+          example: "2026-11-05"
+        assigneeId:
+          type: string
+          example: "user-456"
+
+    TaskPage:
+      type: object
+      description: Paginated task list response
+      required:
+        - items
+        - total
+        - limit
+      properties:
+        items:
+          type: array
+          description: List of tasks on the page
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+          description: Total number of matching tasks
+          example: 45
+        limit:
+          type: integer
+          description: Number of records per page
+          example: 20
+
+    Error:
+      type: object
+      description: Error response structure following RFC 7807 (Problem Details)
+      required:
+        - status
+        - title
+      properties:
+        type:
+          type: string
+          format: uri
+          example: "https://example.com/errors/validation-error"
+        title:
+          type: string
+          example: "Invalid Request Data"
+        status:
+          type: integer
+          example: 422
+        detail:
+          type: string
+          example: "The 'title' field is required and cannot be empty"
+        traceId:
+          type: string
+          example: "c73a038b-118a-44d4-a146-5e5d16531102"
+
+  responses:
+    Task:
+      description: Task representation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
+
+    TaskPage:
+      description: Successfully retrieved task list page
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TaskPage'
+
+    Unauthorized:
+      description: Authentication credentials missing or invalid JWT token (401)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Task with the specified ID was not found (404)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ValidationError:
+      description: Validation error - request payload is invalid or missing required fields (422)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
