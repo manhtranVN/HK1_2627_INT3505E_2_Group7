@@ -1,0 +1,533 @@
+openapi: 3.0.3
+info:
+  title: Books Management API
+  version: 1.0.0
+  description: |
+    RESTful Books Management API for catalog administration, book queries,
+    search, inventory status tracking, and book lifecycle management.
+    Fully compliant with **RESTful principles**, **OpenAPI 3.0.3**, and **RFC 7807 (Problem Details for HTTP APIs)**.
+  contact:
+    name: API Engineering Team - Group 7
+    email: api-group7@uet.vnu.edu.vn
+    url: https://github.com/manhtranVN/HK1_2627_INT3505E_2_Group7
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000/v1
+    description: Local development server (v1)
+  - url: http://localhost:5000
+    description: Local development server (Root)
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: books
+    description: CRUD operations and inventory management for books
+
+paths:
+  /books:
+    get:
+      summary: List books with pagination and filters
+      description: |
+        Returns a paginated list of books (limit/offset).
+        Supports filtering by `genre`, inventory availability (`isAvailable`),
+        and keyword full-text search across titles and authors (`search`).
+      operationId: listBooks
+      tags:
+        - books
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/GenreFilter'
+        - $ref: '#/components/parameters/AvailabilityFilter'
+        - $ref: '#/components/parameters/SearchKeyword'
+      responses:
+        '200':
+          $ref: '#/components/responses/BookPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+
+    post:
+      summary: Create a new book
+      description: |
+        Creates a new book record in the system.
+        Clients must provide all mandatory fields: `title`, `author`, `isbn`, `genre`, and `price`.
+        The publication date format must conform to ISO 8601 (RFC 3339).
+      operationId: createBook
+      tags:
+        - books
+      requestBody:
+        required: true
+        description: Book data payload to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookInput'
+            example:
+              title: "Clean Code: A Handbook of Agile Software Craftsmanship"
+              author: "Robert C. Martin"
+              isbn: "9780132350884"
+              genre: "Technology"
+              publishedDate: "2008-08-01"
+              price: 42.50
+              isAvailable: true
+      responses:
+        '201':
+          description: Book successfully created
+          headers:
+            Location:
+              description: URI identifier of the created book resource
+              schema:
+                type: string
+                example: "/v1/books/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+
+  /books/{bookId}:
+    parameters:
+      - in: path
+        name: bookId
+        required: true
+        description: Unique UUID v4 identifier of the book
+        schema:
+          type: string
+          format: uuid
+        example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+
+    get:
+      summary: Get book details by ID
+      description: Returns full details of a specific book by its `bookId`.
+      operationId: getBookById
+      tags:
+        - books
+      responses:
+        '200':
+          $ref: '#/components/responses/BookResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+
+    patch:
+      summary: Partially update a book
+      description: |
+        Partially updates one or more fields of an existing book identified by `bookId`.
+        Fields not included in the payload retain their existing values.
+      operationId: patchBook
+      tags:
+        - books
+      requestBody:
+        required: true
+        description: Fields to update on the book
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBookInput'
+            example:
+              price: 38.99
+              isAvailable: false
+      responses:
+        '200':
+          $ref: '#/components/responses/BookResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+
+    delete:
+      summary: Delete a book
+      description: Permanently deletes the book identified by `bookId`. Returns HTTP 204 No Content on success.
+      operationId: deleteBook
+      tags:
+        - books
+      responses:
+        '204':
+          description: Book successfully deleted, no response body returned (No Content)
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT Bearer authentication via Authorization header: Bearer <token>"
+
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: Maximum number of records returned per page (default 20, max 100)
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      example: 20
+
+    PageOffset:
+      name: offset
+      in: query
+      description: Offset position to begin fetching records (default 0)
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      example: 0
+
+    GenreFilter:
+      name: genre
+      in: query
+      description: Filter books by a specific category
+      required: false
+      schema:
+        type: string
+        enum:
+          - Fiction
+          - Non-Fiction
+          - Technology
+          - Science
+          - History
+          - Literature
+      example: Technology
+
+    AvailabilityFilter:
+      name: isAvailable
+      in: query
+      description: Filter books by inventory availability status
+      required: false
+      schema:
+        type: boolean
+      example: true
+
+    SearchKeyword:
+      name: search
+      in: query
+      description: Keyword to search across book title and author
+      required: false
+      schema:
+        type: string
+        minLength: 1
+      example: "Martin"
+
+  schemas:
+    Book:
+      type: object
+      description: Complete Book domain entity
+      required:
+        - id
+        - title
+        - author
+        - isbn
+        - genre
+        - price
+        - isAvailable
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier in UUID v4 format
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Book title
+          example: "Clean Code: A Handbook of Agile Software Craftsmanship"
+        author:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Name of author or authors
+          example: "Robert C. Martin"
+        isbn:
+          type: string
+          pattern: "^[0-9]{13}$"
+          description: International Standard Book Number (ISBN-13 format)
+          example: "9780132350884"
+        genre:
+          type: string
+          description: Book category or genre
+          enum:
+            - Fiction
+            - Non-Fiction
+            - Technology
+            - Science
+            - History
+            - Literature
+          example: "Technology"
+        publishedDate:
+          type: string
+          format: date
+          description: Publication date in RFC 3339 format (YYYY-MM-DD)
+          example: "2008-08-01"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          description: Selling price of the book in USD
+          example: 42.50
+        isAvailable:
+          type: boolean
+          description: Whether the book is currently available in stock
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the book was created (ISO 8601 UTC)
+          example: "2026-10-11T08:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the book was last updated (ISO 8601 UTC)
+          example: "2026-10-11T08:00:00Z"
+
+    CreateBookInput:
+      type: object
+      description: Input payload required to create a new book
+      required:
+        - title
+        - author
+        - isbn
+        - genre
+        - price
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Book title
+          example: "Designing Data-Intensive Applications"
+        author:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Author name
+          example: "Martin Kleppmann"
+        isbn:
+          type: string
+          pattern: "^[0-9]{13}$"
+          description: Valid 13-digit ISBN string
+          example: "9781449373320"
+        genre:
+          type: string
+          description: Book category
+          enum:
+            - Fiction
+            - Non-Fiction
+            - Technology
+            - Science
+            - History
+            - Literature
+          example: "Technology"
+        publishedDate:
+          type: string
+          format: date
+          description: Publication date in ISO 8601 format (YYYY-MM-DD)
+          example: "2017-03-16"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          description: Price in USD (greater than or equal to 0)
+          example: 49.99
+        isAvailable:
+          type: boolean
+          description: Inventory availability flag (default true)
+          default: true
+          example: true
+
+    UpdateBookInput:
+      type: object
+      description: Input payload for partially updating a book (PATCH)
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Updated book title
+          example: "Designing Data-Intensive Applications: Updated Edition"
+        author:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Updated author name
+          example: "Martin Kleppmann"
+        isbn:
+          type: string
+          pattern: "^[0-9]{13}$"
+          description: Updated 13-digit ISBN string
+          example: "9781449373320"
+        genre:
+          type: string
+          description: Updated category
+          enum:
+            - Fiction
+            - Non-Fiction
+            - Technology
+            - Science
+            - History
+            - Literature
+          example: "Technology"
+        publishedDate:
+          type: string
+          format: date
+          description: Updated publication date (YYYY-MM-DD)
+          example: "2017-03-16"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          description: Updated price in USD
+          example: 45.00
+        isAvailable:
+          type: boolean
+          description: Updated inventory availability flag
+          example: false
+
+    BookPage:
+      type: object
+      description: Paginated book list response
+      required:
+        - items
+        - total
+        - limit
+        - offset
+      properties:
+        items:
+          type: array
+          description: Array of books returned on the current page
+          items:
+            $ref: '#/components/schemas/Book'
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of matching books across all pages
+          example: 42
+        limit:
+          type: integer
+          minimum: 1
+          description: Maximum number of records per page
+          example: 20
+        offset:
+          type: integer
+          minimum: 0
+          description: Starting record offset index
+          example: 0
+
+    Error:
+      type: object
+      description: Standardized error structure following RFC 7807 (Problem Details)
+      required:
+        - status
+        - title
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Absolute URI identifying the specific problem type
+          example: "https://api.example.com/errors/not-found"
+        title:
+          type: string
+          description: Short human-readable summary of the problem type
+          example: "Resource Not Found"
+        status:
+          type: integer
+          description: The HTTP status code generated by the origin server
+          example: 404
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: "Book with ID 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11' was not found."
+        instance:
+          type: string
+          description: A URI reference identifying the specific occurrence of the problem
+          example: "/v1/books/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        traceId:
+          type: string
+          description: Unique distributed tracing ID for diagnostics and audit logging
+          example: "d4b1a432-843e-462f-8703-9bb59cba67c8"
+
+  responses:
+    BookResponse:
+      description: Detailed information of a single book
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Book'
+
+    BookPageResponse:
+      description: Paginated book collection successfully retrieved
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BookPage'
+
+    BadRequestResponse:
+      description: Invalid request syntax, parameters or query values (HTTP 400)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    UnauthorizedResponse:
+      description: Missing or invalid authentication credentials / JWT token (HTTP 401)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFoundResponse:
+      description: The requested book resource was not found (HTTP 404)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ValidationErrorResponse:
+      description: Request payload failed schema validation constraints (HTTP 422)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerErrorResponse:
+      description: Unexpected internal server error (HTTP 500)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
