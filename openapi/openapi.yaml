@@ -1,0 +1,1238 @@
+openapi: 3.0.3
+info:
+  title: MNP - Movie Navigator Promax API
+  version: 0.2.0
+  description: |
+    RESTful API contract cho nền tảng xem phim online **MNP - Movie Navigator Promax** (Đồ án INT3505E - Nhóm 7).
+
+    ### Phiên bản đặc tả
+    - **v0.1 (Core Foundation):** Chuẩn `/api/v1`, UUID v4, lỗi RFC 7807 (`application/problem+json`), phân trang `PageMeta` và `bearerAuth` (JWT).
+    - **v0.2 (Bản hiện tại - Mạnh / TV1):** Bổ sung đầy đủ endpoints **System**, **Auth** và **Catalog / Admin** (`Movies`, `Genres`).
+    - **v1.0 (Sau khi merge PR đồng đội):** Tích hợp nhóm `/me/*` (QPhong / TV2) và nhóm gợi ý AI `/me/recommendations`, `/movies/{movieId}/similar` (Nguyên / TV4).
+
+    ### Quy ước & Phạm vi MVP
+    - **URI Versioning:** Mọi endpoint đặt dưới tiền tố `/api/v1`.
+    - **Định danh tài nguyên:** Dùng UUID v4 do server sinh ra, tách biệt hoàn toàn với khóa nghiệp vụ (`email`, `slug`, `tmdbId`).
+    - **Xác thực & Phân quyền:** Tách rõ xác thực (JWT Bearer token) khỏi phân quyền (RBAC 3 vai trò: `Guest`, `user`, `admin` và kiểm quyền sở hữu từng bản ghi trên `/me/*`).
+    - **Phạm vi video MVP:** Chỉ phục vụ phát trực tiếp 2-3 video mẫu hợp lệ (`streamUrl`), không chuyển mã video tự động theo độ phân giải.
+  contact:
+    name: MNP API Engineering Team - Group 7 (INT3505E)
+    email: api-group7@uet.vnu.edu.vn
+    url: https://github.com/manhtranVN/HK1_2627_INT3505E_2_Group7
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local Flask development server
+  - url: http://localhost:4010/api/v1
+    description: Local Swagger / Prism mock server
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: System
+    description: Kiểm tra trạng thái sống và sẵn sàng của dịch vụ backend
+  - name: Auth
+    description: Đăng ký, đăng nhập và lấy thông tin tài khoản từ JWT
+  - name: Movies
+    description: Tra cứu, tìm kiếm, lọc và quản trị danh mục phim
+  - name: Genres
+    description: Tra cứu và quản trị danh mục thể loại phim
+  # Reserved tags for upcoming PRs (uncomment when merging v1.0):
+  # - name: Me
+  #   description: Tương tác cá nhân hóa của người dùng (QPhong - feat/data-model-me-api)
+  # - name: Recommendations
+  #   description: Gợi ý phim theo nội dung TF-IDF + cosine (Nguyên - feat/brief-ai-plan)
+
+paths:
+  /health:
+    get:
+      operationId: getHealthStatus
+      summary: Kiểm tra tình trạng hoạt động của API
+      description: |
+        Trả về trạng thái hiện tại của Flask API service và phiên bản contract đang phục vụ.
+        Endpoint công khai phục vụ Docker healthcheck và giám sát cơ bản.
+      tags:
+        - System
+      security: []
+      responses:
+        '200':
+          description: Dịch vụ đang hoạt động bình thường
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+              example:
+                status: ok
+                service: mnp-api
+                version: 0.2.0
+                timestamp: '2026-11-23T10:00:00Z'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/register:
+    post:
+      operationId: registerUser
+      summary: Đăng ký tài khoản người dùng mới
+      description: |
+        Tạo tài khoản `Registered User` mới với vai trò mặc định `user`.
+        Email phải là duy nhất (không phân biệt hoa thường); mật khẩu được băm bằng bcrypt ở backend và không bao giờ xuất hiện trong response.
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        required: true
+        description: Thông tin đăng ký tài khoản mới
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            example:
+              email: minh.nguyen@example.com
+              password: StrongPassword123!
+              displayName: Nguyễn Văn Minh
+      responses:
+        '201':
+          description: Đăng ký thành công, trả về access token và hồ sơ người dùng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/login:
+    post:
+      operationId: loginUser
+      summary: Đăng nhập và nhận JWT access token
+      description: |
+        Xác thực thông tin đăng nhập (email + password) và cấp JWT access token chứa `sub` (UUID user) và `role`.
+        Trả lỗi 401 thống nhất khi email không tồn tại hoặc mật khẩu không khớp để tránh lộ thông tin tài khoản.
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        required: true
+        description: Thông tin đăng nhập
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: minh.nguyen@example.com
+              password: StrongPassword123!
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/me:
+    get:
+      operationId: getCurrentUserProfile
+      summary: Lấy thông tin người dùng hiện tại từ JWT
+      description: |
+        Đọc danh tính người dùng từ `sub` trong JWT Bearer token (không nhận `userId` từ query/path).
+        Khách chưa đăng nhập sẽ nhận `401 Unauthorized`.
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Hồ sơ người dùng đang đăng nhập
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /movies:
+    get:
+      operationId: listMovies
+      summary: Lấy danh sách phim có phân trang, tìm kiếm, lọc và sắp xếp
+      description: |
+        Cho phép Guest, Registered User và Admin duyệt danh mục phim.
+        Mặc định chỉ trả phim có `status = published`. Tham số `includeHidden=true` chỉ có hiệu lực khi caller có vai trò `admin`; với Guest hoặc `user`, phim ẩn luôn được lọc bỏ.
+      tags:
+        - Movies
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SearchQueryParam'
+        - $ref: '#/components/parameters/GenreFilterParam'
+        - $ref: '#/components/parameters/ReleaseYearParam'
+        - $ref: '#/components/parameters/SortByParam'
+        - $ref: '#/components/parameters/SortOrderParam'
+        - $ref: '#/components/parameters/IncludeHiddenParam'
+      responses:
+        '200':
+          description: Danh sách phim phân trang thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoviePageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      operationId: createMovie
+      summary: Thêm phim mới vào danh mục (Chỉ Admin)
+      description: |
+        Tạo mới bản ghi phim kèm danh sách `genreIds` liên kết.
+        Yêu cầu JWT với `role = admin`; tài khoản `user` thường nhận `403 Forbidden`.
+      tags:
+        - Movies
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Dữ liệu phim mới cần tạo
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMovieRequest'
+            example:
+              title: Sintel
+              slug: sintel-2010
+              overview: Một cô gái trẻ tên Sintel lên đường tìm kiếm chú rồng nhỏ Scales mà cô từng cứu và kết bạn.
+              releaseYear: 2010
+              durationMinutes: 15
+              posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+              streamUrl: https://cdn.mnp.local/videos/sintel-sample.mp4
+              director: Colin Levy
+              cast:
+                - Halina Reijn
+                - Thom Hoffman
+              genreIds:
+                - 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                - 7c9e6679-7425-40de-944b-e07fc1f90ae7
+              tmdbId: 45745
+              status: published
+      responses:
+        '201':
+          description: Tạo phim mới thành công
+          headers:
+            Location:
+              description: Đường dẫn tới tài nguyên phim vừa tạo
+              schema:
+                type: string
+                example: /api/v1/movies/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /movies/{movieId}:
+    parameters:
+      - $ref: '#/components/parameters/MovieIdPath'
+
+    get:
+      operationId: getMovieById
+      summary: Xem thông tin chi tiết một bộ phim
+      description: |
+        Trả về metadata đầy đủ, danh sách thể loại nhúng (`genres[]`), trạng thái khả dụng video (`hasVideo`) và `streamUrl` (nếu có video mẫu).
+        Nếu phim ở trạng thái `hidden` và người gọi không phải `admin`, API trả `404 Not Found` để không làm lộ sự tồn tại của phim bị ẩn.
+      tags:
+        - Movies
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IncludeHiddenParam'
+      responses:
+        '200':
+          description: Thông tin chi tiết phim
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      operationId: updateMovie
+      summary: Cập nhật một phần thông tin hoặc trạng thái ẩn/hiện phim (Chỉ Admin)
+      description: |
+        Cập nhật linh hoạt các trường của phim (bao gồm chuyển `status` giữa `published` và `hidden`).
+        Yêu cầu tối thiểu 1 trường hợp lệ trong request body.
+      tags:
+        - Movies
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Các trường cần cập nhật của phim
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMovieRequest'
+            example:
+              status: hidden
+              overview: Cập nhật mô tả tóm tắt phim phục vụ demo.
+      responses:
+        '200':
+          description: Cập nhật phim thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteMovie
+      summary: Xóa mềm hoặc ẩn phim khỏi danh mục (Chỉ Admin)
+      description: |
+        Chuyển trạng thái phim sang ẩn/xóa khỏi danh mục công khai (soft delete để bảo toàn lịch sử tham chiếu).
+        Yêu cầu JWT với `role = admin`.
+      tags:
+        - Movies
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Xóa/ẩn phim thành công (không có nội dung trả về)
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /genres:
+    get:
+      operationId: listGenres
+      summary: Lấy toàn bộ danh mục thể loại phim
+      description: |
+        Trả về danh sách thể loại sắp xếp theo tên, dùng cho bộ lọc phim của Guest và màn hình chọn sở thích ban đầu của Registered User.
+      tags:
+        - Genres
+      security: []
+      responses:
+        '200':
+          description: Danh sách thể loại phim
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenreListResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      operationId: createGenre
+      summary: Thêm thể loại phim mới (Chỉ Admin)
+      description: |
+        Tạo mới một thể loại phim với `name` và `slug` duy nhất.
+        Yêu cầu JWT với `role = admin`.
+      tags:
+        - Genres
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Thông tin thể loại mới
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGenreRequest'
+            example:
+              name: Khoa học viễn tưởng
+              slug: sci-fi
+      responses:
+        '201':
+          description: Tạo thể loại thành công
+          headers:
+            Location:
+              description: URI của thể loại vừa tạo (tra cứu qua bộ lọc danh sách thể loại)
+              schema:
+                type: string
+                example: /api/v1/genres?slug=sci-fi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genre'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # =========================================================================
+  # INTEGRATION SLOTS FOR TEAMMATES (To be added via PRs before v1.0)
+  # -------------------------------------------------------------------------
+  # [QPhong - feat/data-model-me-api]:
+  #   - GET    /me/favorites
+  #   - PUT    /me/favorites/{movieId}
+  #   - DELETE /me/favorites/{movieId}
+  #   - PUT    /me/ratings/{movieId}
+  #   - PUT    /me/watch-progress/{movieId}
+  #   - PUT    /me/preferences/genres
+  # [Nguyên - feat/brief-ai-plan]:
+  #   - GET    /me/recommendations
+  #   - GET    /movies/{movieId}/similar
+  # =========================================================================
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT Access Token cấp bởi `POST /api/v1/auth/login` hoặc `POST /api/v1/auth/register`.
+        Header mẫu: `Authorization: Bearer <jwt_token>`.
+        Payload token mang `sub` (UUID người dùng), `role` (`user` | `admin`), `iat` và `exp`.
+
+  parameters:
+    MovieIdPath:
+      name: movieId
+      in: path
+      required: true
+      description: Định danh UUID v4 duy nhất của phim
+      schema:
+        type: string
+        format: uuid
+      example: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+
+    PageParam:
+      name: page
+      in: query
+      required: false
+      description: Số thứ tự trang (bắt đầu từ 1)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      example: 1
+
+    LimitParam:
+      name: limit
+      in: query
+      required: false
+      description: Số lượng bản ghi tối đa trên mỗi trang (từ 1 đến 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      example: 20
+
+    SearchQueryParam:
+      name: q
+      in: query
+      required: false
+      description: Từ khóa tìm kiếm theo tên phim, diễn viên hoặc đạo diễn
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 100
+      example: Sintel
+
+    GenreFilterParam:
+      name: genre
+      in: query
+      required: false
+      description: Lọc theo `slug` hoặc UUID của thể loại
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 64
+      example: animation
+
+    ReleaseYearParam:
+      name: year
+      in: query
+      required: false
+      description: Lọc theo năm phát hành phim
+      schema:
+        type: integer
+        minimum: 1900
+        maximum: 2100
+      example: 2010
+
+    SortByParam:
+      name: sortBy
+      in: query
+      required: false
+      description: Trường sắp xếp kết quả danh sách phim
+      schema:
+        type: string
+        enum:
+          - createdAt
+          - releaseYear
+          - averageRating
+          - title
+          - popularity
+        default: createdAt
+      example: averageRating
+
+    SortOrderParam:
+      name: sortOrder
+      in: query
+      required: false
+      description: Thứ tự sắp xếp tăng dần (`asc`) hoặc giảm dần (`desc`)
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: desc
+      example: desc
+
+    IncludeHiddenParam:
+      name: includeHidden
+      in: query
+      required: false
+      description: Chỉ dành cho `admin` để xem cả phim ở trạng thái `hidden`; bỏ qua với Guest và `user`
+      schema:
+        type: boolean
+        default: false
+      example: false
+
+  schemas:
+    ErrorCode:
+      type: string
+      description: Mã lỗi nghiệp vụ chuẩn hóa để frontend xử lý theo nhánh logic cố định
+      enum:
+        - BAD_REQUEST
+        - VALIDATION_ERROR
+        - UNAUTHORIZED
+        - TOKEN_EXPIRED
+        - FORBIDDEN
+        - NOT_FOUND
+        - CONFLICT
+        - EMAIL_ALREADY_EXISTS
+        - SLUG_ALREADY_EXISTS
+        - INTERNAL_SERVER_ERROR
+      example: NOT_FOUND
+
+    FieldError:
+      type: object
+      description: Chi tiết lỗi kiểm tra hợp lệ theo từng trường dữ liệu đầu vào
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+          description: Tên trường gây lỗi (hỗ trợ dot-notation)
+          example: releaseYear
+        message:
+          type: string
+          description: Mô tả nguyên nhân lỗi của trường này
+          example: Năm phát hành phải nằm trong khoảng từ 1900 đến 2100.
+
+    ProblemDetails:
+      type: object
+      description: Cấu trúc phản hồi lỗi thống nhất theo chuẩn RFC 7807 (`application/problem+json`)
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+        - traceId
+        - errorCode
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI định danh loại lỗi
+          example: https://api.mnp.local/errors/not-found
+        title:
+          type: string
+          description: Tóm tắt ngắn gọn loại lỗi
+          example: Resource Not Found
+        status:
+          type: integer
+          format: int32
+          description: Mã trạng thái HTTP
+          example: 404
+        detail:
+          type: string
+          description: Giải thích cụ thể cho lần phát sinh lỗi này
+          example: Không tìm thấy phim với ID '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'.
+        instance:
+          type: string
+          description: Đường dẫn request xảy ra lỗi
+          example: /api/v1/movies/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+        traceId:
+          type: string
+          format: uuid
+          description: Mã truy vết request phục vụ chẩn đoán và đối soát log
+          example: d4b1a432-843e-462f-8703-9bb59cba67c8
+        errorCode:
+          $ref: '#/components/schemas/ErrorCode'
+        errors:
+          type: array
+          description: Danh sách lỗi chi tiết từng trường (thường có khi HTTP status là 422)
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    PageMeta:
+      type: object
+      description: Siêu dữ liệu phân trang dùng chung cho mọi collection endpoint
+      required:
+        - page
+        - limit
+        - totalItems
+        - totalPages
+        - hasNext
+        - hasPrev
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          example: 20
+        totalItems:
+          type: integer
+          minimum: 0
+          example: 540
+        totalPages:
+          type: integer
+          minimum: 0
+          example: 27
+        hasNext:
+          type: boolean
+          example: true
+        hasPrev:
+          type: boolean
+          example: false
+
+    HealthStatus:
+      type: object
+      description: Trạng thái hoạt động của dịch vụ backend
+      required:
+        - status
+        - service
+        - version
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
+          example: ok
+        service:
+          type: string
+          example: mnp-api
+        version:
+          type: string
+          example: 0.2.0
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-11-23T10:00:00Z'
+
+    UserRole:
+      type: string
+      description: Vai trò người dùng đã xác thực trong hệ thống (Guest không có token)
+      enum:
+        - user
+        - admin
+      example: user
+
+    RegisterRequest:
+      type: object
+      description: Payload đăng ký tài khoản mới
+      required:
+        - email
+        - password
+        - displayName
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: minh.nguyen@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 72
+          description: Mật khẩu thô gửi qua HTTPS (giới hạn 72 byte tương thích bcrypt)
+          example: StrongPassword123!
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 80
+          example: Nguyễn Văn Minh
+
+    LoginRequest:
+      type: object
+      description: Payload đăng nhập tài khoản
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: minh.nguyen@example.com
+        password:
+          type: string
+          format: password
+          minLength: 1
+          maxLength: 72
+          example: StrongPassword123!
+
+    UserProfile:
+      type: object
+      description: Biểu diễn API công khai của người dùng (ẩn passwordHash)
+      required:
+        - id
+        - email
+        - displayName
+        - role
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: c56a4180-65aa-42ec-a945-5fd21dec0538
+        email:
+          type: string
+          format: email
+          example: minh.nguyen@example.com
+        displayName:
+          type: string
+          example: Nguyễn Văn Minh
+        role:
+          $ref: '#/components/schemas/UserRole'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-11-23T09:30:00Z'
+
+    AuthTokenResponse:
+      type: object
+      description: Phản hồi cấp JWT token sau khi đăng ký hoặc đăng nhập thành công
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+        - user
+      properties:
+        accessToken:
+          type: string
+          description: Chuỗi JWT đã ký
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNTZhNDE4MC02NWFhLTQyZWMtYTk0NS01ZmQyMWRlYzA1MzgiLCJyb2xlIjoidXNlciJ9.signature
+        tokenType:
+          type: string
+          enum:
+            - Bearer
+          example: Bearer
+        expiresIn:
+          type: integer
+          minimum: 60
+          description: Thời gian sống của access token tính bằng giây
+          example: 3600
+        user:
+          $ref: '#/components/schemas/UserProfile'
+
+    Genre:
+      type: object
+      description: Thông tin thể loại phim
+      required:
+        - id
+        - name
+        - slug
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          example: Hoạt hình
+        slug:
+          type: string
+          pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          maxLength: 64
+          example: animation
+
+    CreateGenreRequest:
+      type: object
+      description: Payload tạo thể loại mới (Admin)
+      required:
+        - name
+        - slug
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          example: Khoa học viễn tưởng
+        slug:
+          type: string
+          pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          minLength: 1
+          maxLength: 64
+          example: sci-fi
+
+    GenreListResponse:
+      type: object
+      description: Danh sách toàn bộ thể loại phim
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+        total:
+          type: integer
+          minimum: 0
+          example: 12
+
+    MovieStatus:
+      type: string
+      description: Trạng thái hiển thị phim trong danh mục
+      enum:
+        - published
+        - hidden
+      example: published
+
+    MovieSummary:
+      type: object
+      description: Thông tin tóm tắt phim trong danh sách (nhúng genres[] thay vì bảng nối DB)
+      required:
+        - id
+        - title
+        - slug
+        - releaseYear
+        - durationMinutes
+        - posterUrl
+        - genres
+        - averageRating
+        - ratingCount
+        - hasVideo
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+        title:
+          type: string
+          example: Sintel
+        slug:
+          type: string
+          example: sintel-2010
+        releaseYear:
+          type: integer
+          minimum: 1900
+          maximum: 2100
+          example: 2010
+        durationMinutes:
+          type: integer
+          minimum: 1
+          example: 15
+        posterUrl:
+          type: string
+          format: uri
+          example: https://cdn.mnp.local/posters/sintel.jpg
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+        averageRating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+          example: 4.6
+        ratingCount:
+          type: integer
+          minimum: 0
+          example: 128
+        hasVideo:
+          type: boolean
+          description: Cho biết phim có gắn video mẫu hợp lệ để phát hay chỉ có metadata
+          example: true
+        status:
+          $ref: '#/components/schemas/MovieStatus'
+
+    MovieDetail:
+      allOf:
+        - $ref: '#/components/schemas/MovieSummary'
+        - type: object
+          description: Thông tin chi tiết phim (ẩn đường dẫn lưu trữ nội bộ của server)
+          required:
+            - overview
+            - director
+            - cast
+            - createdAt
+            - updatedAt
+          properties:
+            overview:
+              type: string
+              example: Một cô gái trẻ tên Sintel lên đường tìm kiếm chú rồng nhỏ Scales mà cô từng cứu và kết bạn.
+            director:
+              type: string
+              example: Colin Levy
+            cast:
+              type: array
+              items:
+                type: string
+              example:
+                - Halina Reijn
+                - Thom Hoffman
+            streamUrl:
+              type: string
+              format: uri
+              description: URL phát video hợp lệ cho MVP (chỉ có khi hasVideo = true)
+              example: https://cdn.mnp.local/videos/sintel-sample.mp4
+            tmdbId:
+              type: integer
+              minimum: 1
+              description: ID tham chiếu TMDB phục vụ đối soát dữ liệu metadata
+              example: 45745
+            createdAt:
+              type: string
+              format: date-time
+              example: '2026-11-20T08:00:00Z'
+            updatedAt:
+              type: string
+              format: date-time
+              example: '2026-11-22T14:15:00Z'
+
+    CreateMovieRequest:
+      type: object
+      description: Payload tạo phim mới (Admin)
+      required:
+        - title
+        - slug
+        - overview
+        - releaseYear
+        - durationMinutes
+        - posterUrl
+        - director
+        - cast
+        - genreIds
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: Sintel
+        slug:
+          type: string
+          pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          minLength: 1
+          maxLength: 200
+          example: sintel-2010
+        overview:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          example: Một cô gái trẻ tên Sintel lên đường tìm kiếm chú rồng nhỏ Scales mà cô từng cứu và kết bạn.
+        releaseYear:
+          type: integer
+          minimum: 1900
+          maximum: 2100
+          example: 2010
+        durationMinutes:
+          type: integer
+          minimum: 1
+          maximum: 600
+          example: 15
+        posterUrl:
+          type: string
+          format: uri
+          example: https://cdn.mnp.local/posters/sintel.jpg
+        streamUrl:
+          type: string
+          format: uri
+          description: URL phát video mẫu hợp lệ (tùy chọn vì MVP có 500-1.000 metadata nhưng chỉ 2-3 video)
+          example: https://cdn.mnp.local/videos/sintel-sample.mp4
+        director:
+          type: string
+          minLength: 1
+          maxLength: 120
+          example: Colin Levy
+        cast:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+          example:
+            - Halina Reijn
+            - Thom Hoffman
+        genreIds:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+          example:
+            - 3fa85f64-5717-4562-b3fc-2c963f66afa6
+            - 7c9e6679-7425-40de-944b-e07fc1f90ae7
+        tmdbId:
+          type: integer
+          minimum: 1
+          example: 45745
+        status:
+          $ref: '#/components/schemas/MovieStatus'
+
+    UpdateMovieRequest:
+      type: object
+      minProperties: 1
+      description: Payload cập nhật một phần thông tin phim (PATCH - tối thiểu 1 trường)
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          type: string
+          pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          minLength: 1
+          maxLength: 200
+        overview:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        releaseYear:
+          type: integer
+          minimum: 1900
+          maximum: 2100
+        durationMinutes:
+          type: integer
+          minimum: 1
+          maximum: 600
+        posterUrl:
+          type: string
+          format: uri
+        streamUrl:
+          type: string
+          format: uri
+        director:
+          type: string
+          minLength: 1
+          maxLength: 120
+        cast:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+        genreIds:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+        tmdbId:
+          type: integer
+          minimum: 1
+        status:
+          $ref: '#/components/schemas/MovieStatus'
+
+    MoviePageResponse:
+      type: object
+      description: Danh sách phim phân trang theo chuẩn chung `items` + `meta`
+      required:
+        - items
+        - meta
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovieSummary'
+        meta:
+          $ref: '#/components/schemas/PageMeta'
+
+  responses:
+    BadRequest:
+      description: Cú pháp JSON hoặc tham số đường dẫn/truy vấn sai định dạng (HTTP 400)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/bad-request
+            title: Bad Request
+            status: 400
+            detail: Tham số 'movieId' không đúng định dạng UUID v4.
+            instance: /api/v1/movies/invalid-id
+            traceId: 11111111-2222-4333-8444-555555555555
+            errorCode: BAD_REQUEST
+
+    Unauthorized:
+      description: Thiếu JWT token, token không hợp lệ hoặc đã hết hạn (HTTP 401)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/unauthorized
+            title: Unauthorized
+            status: 401
+            detail: Yêu cầu cung cấp JWT Bearer token hợp lệ để thực hiện thao tác này.
+            instance: /api/v1/auth/me
+            traceId: 22222222-3333-4444-8555-666666666666
+            errorCode: UNAUTHORIZED
+
+    Forbidden:
+      description: Đã xác thực nhưng không đủ quyền truy cập tài nguyên hoặc hành động (HTTP 403)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/forbidden
+            title: Forbidden
+            status: 403
+            detail: Thao tác này yêu cầu vai trò quản trị viên (admin).
+            instance: /api/v1/movies
+            traceId: 33333333-4444-4555-8666-777777777777
+            errorCode: FORBIDDEN
+
+    NotFound:
+      description: Tài nguyên không tồn tại hoặc đã bị ẩn với vai trò hiện tại (HTTP 404)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/not-found
+            title: Resource Not Found
+            status: 404
+            detail: Không tìm thấy phim với ID '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'.
+            instance: /api/v1/movies/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+            traceId: 44444444-5555-4666-8777-888888888888
+            errorCode: NOT_FOUND
+
+    Conflict:
+      description: Xung đột dữ liệu duy nhất như email hoặc slug đã tồn tại (HTTP 409)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/conflict
+            title: Conflict
+            status: 409
+            detail: Email 'minh.nguyen@example.com' đã được đăng ký trong hệ thống.
+            instance: /api/v1/auth/register
+            traceId: 55555555-6666-4777-8888-999999999999
+            errorCode: EMAIL_ALREADY_EXISTS
+
+    ValidationError:
+      description: Dữ liệu đầu vào đúng cú pháp JSON nhưng vi phạm ràng buộc nghiệp vụ/schema (HTTP 422)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/validation-error
+            title: Unprocessable Entity
+            status: 422
+            detail: Dữ liệu gửi lên không thỏa mãn ràng buộc kiểm tra hợp lệ.
+            instance: /api/v1/movies
+            traceId: 66666666-7777-4888-8999-aaaaaaaaaaaa
+            errorCode: VALIDATION_ERROR
+            errors:
+              - field: releaseYear
+                message: Năm phát hành phải nằm trong khoảng từ 1900 đến 2100.
+              - field: durationMinutes
+                message: Thời lượng phim phải lớn hơn hoặc bằng 1 phút.
+
+    InternalServerError:
+      description: Lỗi không mong muốn từ máy chủ nội bộ (HTTP 500)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.mnp.local/errors/internal-server-error
+            title: Internal Server Error
+            status: 500
+            detail: Đã xảy ra lỗi hệ thống ngoài ý muốn. Vui lòng thử lại sau hoặc gửi traceId cho đội kỹ thuật.
+            instance: /api/v1/movies
+            traceId: 77777777-8888-4999-8aaa-bbbbbbbbbbbb
+            errorCode: INTERNAL_SERVER_ERROR
