@@ -1,9 +1,5 @@
 # Quy ước thiết kế API — MNP (Movie Navigator Promax)
 
-Tài liệu quy ước chung do **Mạnh (TV1 — API Contract Lead)** ban hành làm hợp đồng tích hợp giữa Frontend (React), Backend (Flask `/api/v1`), tài liệu OpenAPI 3.0.3 (`openapi/openapi.yaml`) và các PR bổ sung của nhóm trong Tuần 12–15.
-
----
-
 ## 1. Versioning & Quy tắc đặt tên Resource
 
 - **URI Versioning:** Mọi endpoint đều nằm dưới tiền tố `/api/v1` (khai báo trong `servers[].url` của `openapi/openapi.yaml`). Khi có breaking change ở các phiên bản sau mới nâng lên `/api/v2`.
@@ -53,14 +49,14 @@ Tài liệu quy ước chung do **Mạnh (TV1 — API Contract Lead)** ban hành
 | HTTP Method | Tính chất | Quy ước áp dụng trong MNP |
 |---|---|---|
 | `GET` | Safe & Idempotent | Không thay đổi trạng thái hệ thống; gọi lặp trả cùng trạng thái tài nguyên. |
-| `PUT` | **Idempotent bắt buộc** | Dùng cho các thao tác tương tác `/me/*` của **QPhong (TV2)**:<br>- `PUT /me/favorites/{movieId}`: upsert trạng thái yêu thích (gọi 1 lần hay 5 lần đều chỉ tồn tại đúng 1 bản ghi `(user_id, movie_id)`, không tạo trùng, trả `200`/`201`).<br>- `PUT /me/ratings/{movieId}`: ghi đè điểm đánh giá (1–5 sao) của user cho phim đó.<br>- `PUT /me/watch-progress/{movieId}`: cập nhật vị trí giây hiện tại (`positionSeconds`), an toàn khi player đồng bộ định kỳ hoặc mạng retry. |
+| `PUT` | **Idempotent bắt buộc** | Dùng cho các thao tác tương tác `/me/*` của Quốc Phong:<br>- `PUT /me/favorites/{movieId}`: upsert trạng thái yêu thích (gọi 1 lần hay 5 lần đều chỉ tồn tại đúng 1 bản ghi `(user_id, movie_id)`, không tạo trùng, trả `200`/`201`).<br>- `PUT /me/ratings/{movieId}`: ghi đè điểm đánh giá (1–5 sao) của user cho phim đó.<br>- `PUT /me/watch-progress/{movieId}`: cập nhật vị trí giây hiện tại (`positionSeconds`), an toàn khi player đồng bộ định kỳ hoặc mạng retry. |
 | `PATCH` | Không mặc định idempotent (nhưng set-field ở MNP an toàn) | `PATCH /movies/{movieId}` chỉ cập nhật các trường gửi lên, yêu cầu tối thiểu 1 trường (`minProperties: 1`). |
 | `DELETE` | **Idempotent về mặt trạng thái** | `DELETE /movies/{movieId}` ẩn/xóa mềm phim (`204 No Content`); `DELETE /me/favorites/{movieId}` bỏ yêu thích. |
 | `POST` | Không idempotent | Dùng cho tạo mới tài nguyên (`POST /movies`, `POST /genres`, `POST /auth/register`) hoặc hành động cấp token (`POST /auth/login`). |
 
 ---
 
-## 4. Bảng mã trạng thái HTTP chuẩn
+## 4. Bảng mã trạng thái HTTP
 
 | Mã HTTP | Ý nghĩa | Khi nào trả về |
 |---|---|---|
