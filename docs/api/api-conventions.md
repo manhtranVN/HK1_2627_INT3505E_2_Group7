@@ -169,7 +169,7 @@ Mọi phản hồi `4xx` và `5xx` **bắt buộc** dùng `Content-Type: applica
 
 ---
 
-## 7. Hướng dẫn tích hợp PR cho QPhong (TV2) & Nguyên (TV4)
+## 7. Hướng dẫn tích hợp PR cho QPhong & Nguyên
 
 Khi mở PR bổ sung vào `openapi/openapi.yaml` để nâng từ `0.2.0` lên `1.0.0`, hãy tái sử dụng trực tiếp các thành phần dùng chung sau:
 
