@@ -146,3 +146,32 @@ desktop.ini
 !screenshots/*.png
 !books-api/screenshots/
 !books-api/screenshots/*.png
+
+# MNP Week 12: local references, backups and temporary output
+# Python environments and caches
+.venv/
+.ruff_cache/
+
+# Local credentials; keep a reusable example if added later
+.env.*
+!.env.example
+
+# Generated validation reports and temporary output
+/docs/references/
+/docs/design/archive/
+/docs/verification/
+/tmp/
+/output/
+
+# QPhong Week 12: local tooling/setup, excluded from upload
+/tools/
+/requirements-dev.txt
+/README.md
+
+# Editor, OS and draw.io recovery/backup files
+*.drawio.bkp
+*.drawio.dtmp
+*.tmp
+
+# Keep current .drawio sources, SVG previews and YAML deliverables trackable.
+# Reference PDFs and old archive copies are local-only, not Week 12 deliverables.
