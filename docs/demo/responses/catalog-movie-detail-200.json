@@ -1,0 +1,27 @@
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "title": "Big Buck Bunny",
+  "originalTitle": "Big Buck Bunny",
+  "overview": "Một chú thỏ khổng lồ tốt bụng quyết định trả đũa ba kẻ bắt nạt trong rừng một cách hài hước và thông minh.",
+  "releaseYear": 2008,
+  "durationMinutes": 10,
+  "posterUrl": "https://images.mnp.vn/posters/big-buck-bunny.jpg",
+  "streamUrl": "https://media.mnp.vn/videos/big_buck_bunny_720p.mp4",
+  "averageRating": 4.5,
+  "totalRatings": 1280,
+  "status": "published",
+  "hasVideo": true,
+  "director": "Sacha Goedegebure",
+  "genres": [
+    {
+      "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "name": "Hoạt hình",
+      "slug": "animation"
+    },
+    {
+      "id": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+      "name": "Hài hước",
+      "slug": "comedy"
+    }
+  ]
+}

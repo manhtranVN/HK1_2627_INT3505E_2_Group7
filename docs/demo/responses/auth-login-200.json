@@ -1,0 +1,12 @@
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMmUzNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjY2MTQxNzQwMDAiLCJlbWFpbCI6InVzZXJAbW5wLnZuIiwicm9sZSI6InVzZXIiLCJleHAiOjE3NjM5ODQwMDB9.s1gNaTuReExAmP1E",
+  "tokenType": "Bearer",
+  "expiresIn": 86400,
+  "user": {
+    "id": "12e34567-e89b-12d3-a456-426614174000",
+    "email": "user@mnp.vn",
+    "displayName": "Nguyễn Văn Người Dùng",
+    "role": "user",
+    "createdAt": "2026-11-20T10:00:00Z"
+  }
+}

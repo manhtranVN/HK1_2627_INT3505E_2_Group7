@@ -1,0 +1,9 @@
+{
+  "type": "https://api.mnp.vn/errors/bad-request",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Tham số 'movieId' không phải định dạng UUID v4 hợp lệ.",
+  "instance": "/api/v1/movies/123-khong-phai-uuid",
+  "traceId": "trace-400-uuid-test",
+  "errorCode": "INVALID_UUID_FORMAT"
+}

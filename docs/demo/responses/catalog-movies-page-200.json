@@ -1,0 +1,58 @@
+{
+  "items": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "title": "Big Buck Bunny",
+      "overview": "Một chú thỏ khổng lồ tốt bụng quyết định trả đũa ba kẻ bắt nạt trong rừng.",
+      "releaseYear": 2008,
+      "durationMinutes": 10,
+      "posterUrl": "https://images.mnp.vn/posters/big-buck-bunny.jpg",
+      "averageRating": 4.5,
+      "totalRatings": 1280,
+      "hasVideo": true,
+      "genres": [
+        {
+          "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+          "name": "Hoạt hình",
+          "slug": "animation"
+        },
+        {
+          "id": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+          "name": "Hài hước",
+          "slug": "comedy"
+        }
+      ]
+    },
+    {
+      "id": "7ca53e12-8841-4c6e-9231-1e98ab7612ef",
+      "title": "Sintel",
+      "overview": "Hành trình đơn độc của một cô gái trẻ tìm kiếm chú rồng nhỏ bị bắt cóc.",
+      "releaseYear": 2010,
+      "durationMinutes": 15,
+      "posterUrl": "https://images.mnp.vn/posters/sintel.jpg",
+      "averageRating": 4.8,
+      "totalRatings": 2450,
+      "hasVideo": true,
+      "genres": [
+        {
+          "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+          "name": "Hoạt hình",
+          "slug": "animation"
+        },
+        {
+          "id": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+          "name": "Phiêu lưu",
+          "slug": "adventure"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "totalItems": 540,
+    "totalPages": 27,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}

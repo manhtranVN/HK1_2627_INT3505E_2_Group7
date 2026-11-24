@@ -1,0 +1,9 @@
+{
+  "type": "https://api.mnp.vn/errors/not-found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Không tìm thấy bộ phim được yêu cầu hoặc phim đang ở trạng thái ẩn.",
+  "instance": "/api/v1/movies/88e99a00-11b2-33c4-55d6-77e88f99a00b",
+  "traceId": "trace-404-hidden-001",
+  "errorCode": "MOVIE_NOT_FOUND"
+}
