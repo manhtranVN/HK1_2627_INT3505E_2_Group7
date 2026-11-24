@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2270" height="2430" viewBox="0 0 2270 2430" font-family="Arial, sans-serif">
+<rect width="100%" height="100%" fill="white"/>
+<defs>
+<marker id="one" viewBox="0 0 24 24" refX="24" refY="12" markerWidth="24" markerHeight="24" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M6 3V21 M13 3V21" fill="none" stroke="#64748b" stroke-width="2"/></marker>
+<marker id="many" viewBox="0 0 30 26" refX="29" refY="13" markerWidth="30" markerHeight="26" orient="auto" markerUnits="userSpaceOnUse"><circle cx="6" cy="13" r="4" fill="white" stroke="#64748b" stroke-width="2"/><path d="M15 13L29 3 M15 13L29 23 M15 13H29" fill="none" stroke="#64748b" stroke-width="2"/></marker></defs>
+<text x="58" y="77.75" font-size="34" fill="#0f172a" font-weight="bold">MNP | Resource Model - Cây tài nguyên / URI</text>
+<text x="58" y="132.875" font-size="21" fill="#334155" font-weight="normal">Collection, item, sub-resource và namespace; đường nối chỉ phân cấp URI, không phải trình tự gọi HTTP</text>
+<rect x="50" y="939.0" width="330" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="50" y="939.0" width="330" height="36" fill="#e2e8f0" stroke="#94a3b8"/>
+<text x="62" y="963.75" font-size="18" fill="#0f172a" font-weight="bold">/api/v1</text>
+<text x="58" y="1019.25" font-size="15" fill="#334155" font-weight="normal">BASE URI</text>
+<text x="58" y="1038.0" font-size="15" fill="#334155" font-weight="normal">http://localhost:5000/api/v1</text>
+<rect x="470" y="179.0" width="470" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="470" y="179.0" width="470" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="482" y="203.75" font-size="18" fill="#0f172a" font-weight="bold">/health</text>
+<text x="478" y="259.25" font-size="15" fill="#334155" font-weight="normal">COLLECTION</text>
+<text x="478" y="278.0" font-size="15" fill="#334155" font-weight="normal">GET → HealthStatus</text>
+<rect x="470" y="559.0" width="470" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="470" y="559.0" width="470" height="36" fill="#f1f5f9" stroke="#94a3b8"/>
+<text x="482" y="583.75" font-size="18" fill="#0f172a" font-weight="bold">/auth</text>
+<text x="478" y="639.25" font-size="15" fill="#334155" font-weight="normal">NAMESPACE · không có operation tại node</text>
+<text x="478" y="658.0" font-size="15" fill="#334155" font-weight="normal">Nhánh URL; không tự suy ra CRUD</text>
+<rect x="1030" y="369.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="369.0" width="500" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="1042" y="393.75" font-size="18" fill="#0f172a" font-weight="bold">/auth/register</text>
+<text x="1038" y="449.25" font-size="15" fill="#334155" font-weight="normal">AUTH OPERATION</text>
+<text x="1038" y="468.0" font-size="15" fill="#334155" font-weight="normal">POST → AuthTokenResponse</text>
+<rect x="1030" y="559.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="559.0" width="500" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="1042" y="583.75" font-size="18" fill="#0f172a" font-weight="bold">/auth/login</text>
+<text x="1038" y="639.25" font-size="15" fill="#334155" font-weight="normal">AUTH OPERATION</text>
+<text x="1038" y="658.0" font-size="15" fill="#334155" font-weight="normal">POST → AuthTokenResponse</text>
+<rect x="1030" y="749.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="749.0" width="500" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="1042" y="773.75" font-size="18" fill="#0f172a" font-weight="bold">/auth/me</text>
+<text x="1038" y="829.25" font-size="15" fill="#334155" font-weight="normal">CURRENT PROFILE</text>
+<text x="1038" y="848.0" font-size="15" fill="#334155" font-weight="normal">GET → UserProfile</text>
+<rect x="470" y="939.0" width="470" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="470" y="939.0" width="470" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="482" y="963.75" font-size="18" fill="#0f172a" font-weight="bold">/movies</text>
+<text x="478" y="1009.875" font-size="15" fill="#334155" font-weight="normal">COLLECTION</text>
+<text x="478" y="1028.625" font-size="15" fill="#334155" font-weight="normal">GET → MoviePageResponse</text>
+<text x="478" y="1047.375" font-size="15" fill="#334155" font-weight="normal">POST → MovieDetail</text>
+<rect x="1030" y="939.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="939.0" width="500" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="1042" y="963.75" font-size="18" fill="#0f172a" font-weight="bold">/movies/{movieId}</text>
+<text x="1038" y="1000.5" font-size="15" fill="#334155" font-weight="normal">ITEM · movieId: UUID</text>
+<text x="1038" y="1019.25" font-size="15" fill="#334155" font-weight="normal">GET → MovieDetail</text>
+<text x="1038" y="1038.0" font-size="15" fill="#334155" font-weight="normal">PATCH → MovieDetail</text>
+<text x="1038" y="1056.75" font-size="15" fill="#334155" font-weight="normal">DELETE → không body</text>
+<rect x="1630" y="939.0" width="580" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1630" y="939.0" width="580" height="36" fill="#f3e8ff" stroke="#94a3b8"/>
+<text x="1642" y="963.75" font-size="18" fill="#0f172a" font-weight="bold">/movies/{movieId}/similar</text>
+<text x="1638" y="1019.25" font-size="15" fill="#334155" font-weight="normal">AI DỰ KIẾN · Nguyên</text>
+<text x="1638" y="1038.0" font-size="15" fill="#334155" font-weight="normal">Nhánh URL; không tự suy ra CRUD</text>
+<rect x="470" y="1129.0" width="470" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="470" y="1129.0" width="470" height="36" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="482" y="1153.75" font-size="18" fill="#0f172a" font-weight="bold">/genres</text>
+<text x="478" y="1199.875" font-size="15" fill="#334155" font-weight="normal">COLLECTION</text>
+<text x="478" y="1218.625" font-size="15" fill="#334155" font-weight="normal">GET → GenreListResponse</text>
+<text x="478" y="1237.375" font-size="15" fill="#334155" font-weight="normal">POST → Genre</text>
+<rect x="470" y="1699.0" width="470" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="470" y="1699.0" width="470" height="36" fill="#fef3c7" stroke="#94a3b8"/>
+<text x="482" y="1723.75" font-size="18" fill="#0f172a" font-weight="bold">/me</text>
+<text x="478" y="1779.25" font-size="15" fill="#334155" font-weight="normal">OWNER CONTEXT · JWT sub</text>
+<text x="478" y="1798.0" font-size="15" fill="#334155" font-weight="normal">user_id suy ra từ token; không có GET /me</text>
+<rect x="1030" y="1319.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="1319.0" width="500" height="36" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="1042" y="1343.75" font-size="18" fill="#0f172a" font-weight="bold">/me/favorites</text>
+<text x="1038" y="1399.25" font-size="15" fill="#334155" font-weight="normal">COLLECTION</text>
+<text x="1038" y="1418.0" font-size="15" fill="#334155" font-weight="normal">GET → FavoritePage</text>
+<rect x="1630" y="1319.0" width="580" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1630" y="1319.0" width="580" height="36" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="1642" y="1343.75" font-size="18" fill="#0f172a" font-weight="bold">/me/favorites/{movieId}</text>
+<text x="1638" y="1389.875" font-size="15" fill="#334155" font-weight="normal">ITEM · movieId: UUID</text>
+<text x="1638" y="1408.625" font-size="15" fill="#334155" font-weight="normal">PUT → Favorite</text>
+<text x="1638" y="1427.375" font-size="15" fill="#334155" font-weight="normal">DELETE → không body</text>
+<rect x="1030" y="1509.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="1509.0" width="500" height="36" fill="#f1f5f9" stroke="#94a3b8"/>
+<text x="1042" y="1533.75" font-size="18" fill="#0f172a" font-weight="bold">/me/ratings</text>
+<text x="1038" y="1589.25" font-size="15" fill="#334155" font-weight="normal">NAMESPACE · không có operation tại node</text>
+<text x="1038" y="1608.0" font-size="15" fill="#334155" font-weight="normal">Nhánh URL; không tự suy ra CRUD</text>
+<rect x="1630" y="1509.0" width="580" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1630" y="1509.0" width="580" height="36" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="1642" y="1533.75" font-size="18" fill="#0f172a" font-weight="bold">/me/ratings/{movieId}</text>
+<text x="1638" y="1589.25" font-size="15" fill="#334155" font-weight="normal">ITEM · movieId: UUID</text>
+<text x="1638" y="1608.0" font-size="15" fill="#334155" font-weight="normal">PUT → Rating</text>
+<rect x="1030" y="1699.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="1699.0" width="500" height="36" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="1042" y="1723.75" font-size="18" fill="#0f172a" font-weight="bold">/me/watch-progress</text>
+<text x="1038" y="1779.25" font-size="15" fill="#334155" font-weight="normal">COLLECTION</text>
+<text x="1038" y="1798.0" font-size="15" fill="#334155" font-weight="normal">GET → ContinueWatchingPage</text>
+<rect x="1630" y="1699.0" width="580" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1630" y="1699.0" width="580" height="36" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="1642" y="1723.75" font-size="18" fill="#0f172a" font-weight="bold">/me/watch-progress/{movieId}</text>
+<text x="1638" y="1779.25" font-size="15" fill="#334155" font-weight="normal">ITEM · movieId: UUID</text>
+<text x="1638" y="1798.0" font-size="15" fill="#334155" font-weight="normal">PUT → WatchProgress</text>
+<rect x="1030" y="1889.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="1889.0" width="500" height="36" fill="#f1f5f9" stroke="#94a3b8"/>
+<text x="1042" y="1913.75" font-size="18" fill="#0f172a" font-weight="bold">/me/preferences</text>
+<text x="1038" y="1969.25" font-size="15" fill="#334155" font-weight="normal">NAMESPACE · không có operation tại node</text>
+<text x="1038" y="1988.0" font-size="15" fill="#334155" font-weight="normal">Nhánh URL; không tự suy ra CRUD</text>
+<rect x="1630" y="1889.0" width="580" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1630" y="1889.0" width="580" height="36" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="1642" y="1913.75" font-size="18" fill="#0f172a" font-weight="bold">/me/preferences/genres</text>
+<text x="1638" y="1959.875" font-size="15" fill="#334155" font-weight="normal">SINGLETON · toàn bộ tập thể loại</text>
+<text x="1638" y="1978.625" font-size="15" fill="#334155" font-weight="normal">GET → GenrePreferences</text>
+<text x="1638" y="1997.375" font-size="15" fill="#334155" font-weight="normal">PUT → GenrePreferences</text>
+<rect x="1030" y="2079.0" width="500" height="132" fill="white" stroke="#94a3b8"/>
+<rect x="1030" y="2079.0" width="500" height="36" fill="#f3e8ff" stroke="#94a3b8"/>
+<text x="1042" y="2103.75" font-size="18" fill="#0f172a" font-weight="bold">/me/recommendations</text>
+<text x="1038" y="2159.25" font-size="15" fill="#334155" font-weight="normal">AI DỰ KIẾN · Nguyên</text>
+<text x="1038" y="2178.0" font-size="15" fill="#334155" font-weight="normal">Nhánh URL; không tự suy ra CRUD</text>
+<polyline points="380,1005.0 425.0,1005.0 425.0,245.0 470,245.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="380,1005.0 425.0,1005.0 425.0,625.0 470,625.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="380,1005.0 425.0,1005.0 425.0,1005.0 470,1005.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="380,1005.0 425.0,1005.0 425.0,1195.0 470,1195.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="380,1005.0 425.0,1005.0 425.0,1765.0 470,1765.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,625.0 985.0,625.0 985.0,435.0 1030,435.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,625.0 985.0,625.0 985.0,625.0 1030,625.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,625.0 985.0,625.0 985.0,815.0 1030,815.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,1005.0 985.0,1005.0 985.0,1005.0 1030,1005.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="1530,1005.0 1580.0,1005.0 1580.0,1005.0 1630,1005.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,1765.0 985.0,1765.0 985.0,1385.0 1030,1385.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,1765.0 985.0,1765.0 985.0,1575.0 1030,1575.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,1765.0 985.0,1765.0 985.0,1765.0 1030,1765.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,1765.0 985.0,1765.0 985.0,1955.0 1030,1955.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="940,1765.0 985.0,1765.0 985.0,2145.0 1030,2145.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="1530,1385.0 1580.0,1385.0 1580.0,1385.0 1630,1385.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="1530,1575.0 1580.0,1575.0 1580.0,1575.0 1630,1575.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="1530,1765.0 1580.0,1765.0 1580.0,1765.0 1630,1765.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<polyline points="1530,1955.0 1580.0,1955.0 1580.0,1955.0 1630,1955.0" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<text x="58" y="2246.75" font-size="18" fill="#334155" font-weight="normal">Core: GET /api/v1/health → HealthStatus. Các node AI màu tím chỉ là ngữ cảnh dự kiến, chưa có operation trong contract.</text>
+<text x="58" y="2288.75" font-size="18" fill="#334155" font-weight="normal">Method lấy từ OpenAPI hiện tại; node namespace không tạo endpoint mới. /auth/login và /auth/register là ngoại lệ thao tác auth được giữ nguyên.</text>
+<text x="58" y="2330.75" font-size="18" fill="#334155" font-weight="normal">Không đưa users, movie_genres hay user_genre_preferences thành endpoint chỉ vì tồn tại bảng DB.</text>
+<text x="58" y="2372.75" font-size="18" fill="#334155" font-weight="normal">Trang 02 trình bày JSON representation và tham chiếu; trang 01 không mô tả FK, deployment hay luồng thao tác của người dùng.</text>
+</svg>

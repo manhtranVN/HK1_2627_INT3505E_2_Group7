@@ -1,0 +1,461 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="01---Resource-URI-Hierarchy" name="01 - Resource URI Hierarchy">
+    <mxGraphModel dx="2270" dy="2430" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2270" pageHeight="2430" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&lt;div&gt;MNP | Resource Model - Cây tài nguyên / URI&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=34;fontColor=#0f172a;spacingLeft=8;spacingRight=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="35" width="2150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="&lt;div&gt;Collection, item, sub-resource và namespace; đường nối chỉ phân cấp URI, không phải trình tự gọi HTTP&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=21;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="2150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:" value="/api/v1" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#e2e8f0;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="939.0" width="330" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:.detail" value="&lt;div&gt;BASE URI&lt;br&gt;http://localhost:5000/api/v1&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:">
+          <mxGeometry x="0" y="36" width="330" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/health" value="/health" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="179.0" width="470" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/health.detail" value="&lt;div&gt;COLLECTION&lt;br&gt;GET → HealthStatus&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/health">
+          <mxGeometry x="0" y="36" width="470" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth" value="/auth" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="559.0" width="470" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth.detail" value="&lt;div&gt;NAMESPACE · không có operation tại node&lt;br&gt;Nhánh URL; không tự suy ra CRUD&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/auth">
+          <mxGeometry x="0" y="36" width="470" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth/register" value="/auth/register" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="369.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth/register.detail" value="&lt;div&gt;AUTH OPERATION&lt;br&gt;POST → AuthTokenResponse&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/auth/register">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth/login" value="/auth/login" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="559.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth/login.detail" value="&lt;div&gt;AUTH OPERATION&lt;br&gt;POST → AuthTokenResponse&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/auth/login">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth/me" value="/auth/me" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="749.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/auth/me.detail" value="&lt;div&gt;CURRENT PROFILE&lt;br&gt;GET → UserProfile&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/auth/me">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/movies" value="/movies" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="939.0" width="470" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/movies.detail" value="&lt;div&gt;COLLECTION&lt;br&gt;GET → MoviePageResponse&lt;br&gt;POST → MovieDetail&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/movies">
+          <mxGeometry x="0" y="36" width="470" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/movies/{movieId}" value="/movies/{movieId}" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="939.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/movies/{movieId}.detail" value="&lt;div&gt;ITEM · movieId: UUID&lt;br&gt;GET → MovieDetail&lt;br&gt;PATCH → MovieDetail&lt;br&gt;DELETE → không body&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/movies/{movieId}">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/movies/{movieId}/similar" value="/movies/{movieId}/similar" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#f3e8ff;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="939.0" width="580" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/movies/{movieId}/similar.detail" value="&lt;div&gt;AI DỰ KIẾN · Nguyên&lt;br&gt;Nhánh URL; không tự suy ra CRUD&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/movies/{movieId}/similar">
+          <mxGeometry x="0" y="36" width="580" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/genres" value="/genres" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1129.0" width="470" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/genres.detail" value="&lt;div&gt;COLLECTION&lt;br&gt;GET → GenreListResponse&lt;br&gt;POST → Genre&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/genres">
+          <mxGeometry x="0" y="36" width="470" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me" value="/me" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#fef3c7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1699.0" width="470" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me.detail" value="&lt;div&gt;OWNER CONTEXT · JWT sub&lt;br&gt;user_id suy ra từ token; không có GET /me&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me">
+          <mxGeometry x="0" y="36" width="470" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/favorites" value="/me/favorites" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="1319.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/favorites.detail" value="&lt;div&gt;COLLECTION&lt;br&gt;GET → FavoritePage&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/favorites">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/favorites/{movieId}" value="/me/favorites/{movieId}" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="1319.0" width="580" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/favorites/{movieId}.detail" value="&lt;div&gt;ITEM · movieId: UUID&lt;br&gt;PUT → Favorite&lt;br&gt;DELETE → không body&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/favorites/{movieId}">
+          <mxGeometry x="0" y="36" width="580" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/ratings" value="/me/ratings" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="1509.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/ratings.detail" value="&lt;div&gt;NAMESPACE · không có operation tại node&lt;br&gt;Nhánh URL; không tự suy ra CRUD&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/ratings">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/ratings/{movieId}" value="/me/ratings/{movieId}" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="1509.0" width="580" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/ratings/{movieId}.detail" value="&lt;div&gt;ITEM · movieId: UUID&lt;br&gt;PUT → Rating&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/ratings/{movieId}">
+          <mxGeometry x="0" y="36" width="580" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/watch-progress" value="/me/watch-progress" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="1699.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/watch-progress.detail" value="&lt;div&gt;COLLECTION&lt;br&gt;GET → ContinueWatchingPage&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/watch-progress">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/watch-progress/{movieId}" value="/me/watch-progress/{movieId}" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="1699.0" width="580" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/watch-progress/{movieId}.detail" value="&lt;div&gt;ITEM · movieId: UUID&lt;br&gt;PUT → WatchProgress&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/watch-progress/{movieId}">
+          <mxGeometry x="0" y="36" width="580" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/preferences" value="/me/preferences" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="1889.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/preferences.detail" value="&lt;div&gt;NAMESPACE · không có operation tại node&lt;br&gt;Nhánh URL; không tự suy ra CRUD&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/preferences">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/preferences/genres" value="/me/preferences/genres" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="1889.0" width="580" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/preferences/genres.detail" value="&lt;div&gt;SINGLETON · toàn bộ tập thể loại&lt;br&gt;GET → GenrePreferences&lt;br&gt;PUT → GenrePreferences&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/preferences/genres">
+          <mxGeometry x="0" y="36" width="580" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/recommendations" value="/me/recommendations" style="swimlane;html=1;startSize=36;horizontal=1;rounded=0;fillColor=#f3e8ff;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=18;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="2079.0" width="500" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:/me/recommendations.detail" value="&lt;div&gt;AI DỰ KIẾN · Nguyên&lt;br&gt;Nhánh URL; không tự suy ra CRUD&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=15;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="uri:/me/recommendations">
+          <mxGeometry x="0" y="36" width="500" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uri:-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:" target="uri:/health">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425.0" y="1005.0" />
+              <mxPoint x="425.0" y="245.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:" target="uri:/auth">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425.0" y="1005.0" />
+              <mxPoint x="425.0" y="625.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:" target="uri:/movies">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425.0" y="1005.0" />
+              <mxPoint x="425.0" y="1005.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:" target="uri:/genres">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425.0" y="1005.0" />
+              <mxPoint x="425.0" y="1195.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:" target="uri:/me">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425.0" y="1005.0" />
+              <mxPoint x="425.0" y="1765.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/auth-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/auth" target="uri:/auth/register">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="625.0" />
+              <mxPoint x="985.0" y="435.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/auth-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/auth" target="uri:/auth/login">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="625.0" />
+              <mxPoint x="985.0" y="625.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/auth-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/auth" target="uri:/auth/me">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="625.0" />
+              <mxPoint x="985.0" y="815.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/movies-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/movies" target="uri:/movies/{movieId}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="1005.0" />
+              <mxPoint x="985.0" y="1005.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/movies/{movieId}-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/movies/{movieId}" target="uri:/movies/{movieId}/similar">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580.0" y="1005.0" />
+              <mxPoint x="1580.0" y="1005.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me" target="uri:/me/favorites">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="1765.0" />
+              <mxPoint x="985.0" y="1385.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me" target="uri:/me/ratings">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="1765.0" />
+              <mxPoint x="985.0" y="1575.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me" target="uri:/me/watch-progress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="1765.0" />
+              <mxPoint x="985.0" y="1765.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me" target="uri:/me/preferences">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="1765.0" />
+              <mxPoint x="985.0" y="1955.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me" target="uri:/me/recommendations">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985.0" y="1765.0" />
+              <mxPoint x="985.0" y="2145.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me/favorites-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me/favorites" target="uri:/me/favorites/{movieId}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580.0" y="1385.0" />
+              <mxPoint x="1580.0" y="1385.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me/ratings-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me/ratings" target="uri:/me/ratings/{movieId}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580.0" y="1575.0" />
+              <mxPoint x="1580.0" y="1575.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me/watch-progress-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me/watch-progress" target="uri:/me/watch-progress/{movieId}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580.0" y="1765.0" />
+              <mxPoint x="1580.0" y="1765.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uri:/me/preferences-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="uri:/me/preferences" target="uri:/me/preferences/genres">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580.0" y="1955.0" />
+              <mxPoint x="1580.0" y="1955.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tree-note0" value="&lt;div&gt;Core: GET /api/v1/health → HealthStatus. Các node AI màu tím chỉ là ngữ cảnh dự kiến, chưa có operation trong contract.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2220" width="2150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tree-note1" value="&lt;div&gt;Method lấy từ OpenAPI hiện tại; node namespace không tạo endpoint mới. /auth/login và /auth/register là ngoại lệ thao tác auth được giữ nguyên.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2262" width="2150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tree-note2" value="&lt;div&gt;Không đưa users, movie_genres hay user_genre_preferences thành endpoint chỉ vì tồn tại bảng DB.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2304" width="2150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tree-note3" value="&lt;div&gt;Trang 02 trình bày JSON representation và tham chiếu; trang 01 không mô tả FK, deployment hay luồng thao tác của người dùng.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2346" width="2150" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="02---API-Representations" name="02 - API Representations">
+    <mxGraphModel dx="1910" dy="2060" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1910" pageHeight="2060" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="repr-title" value="&lt;div&gt;MNP | API representations &amp;amp; resource references&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=32;fontColor=#0f172a;spacingLeft=8;spacingRight=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1810" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="repr-subtitle" value="&lt;div&gt;Góc nhìn consumer: trường JSON, UUID tham chiếu, object nhúng và kết quả tính toán; không phải ERD hay Domain Model&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="90" width="1810" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="User" value="UserProfile" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="190" width="410" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="User.fields" value="&lt;div&gt;« API representation »&lt;br&gt;id: uuid&lt;br&gt;displayName: string&lt;br&gt;email: email&lt;br&gt;role: UserRole&lt;br&gt;Profile: GET /auth/me&lt;br&gt;/me/* owner = JWT sub&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="User">
+          <mxGeometry x="0" y="44" width="410" height="221" as="geometry" />
+        </mxCell>
+        <mxCell id="Favorite" value="Favorite" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="650" y="190" width="440" height="205" as="geometry" />
+        </mxCell>
+        <mxCell id="Favorite.fields" value="&lt;div&gt;« API representation »&lt;br&gt;movieId: uuid&lt;br&gt;movie: MovieSummary&lt;br&gt;createdAt: date-time&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="Favorite">
+          <mxGeometry x="0" y="44" width="440" height="161" as="geometry" />
+        </mxCell>
+        <mxCell id="Rating" value="Rating" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="650" y="510" width="440" height="205" as="geometry" />
+        </mxCell>
+        <mxCell id="Rating.fields" value="&lt;div&gt;« API representation »&lt;br&gt;movieId: uuid&lt;br&gt;score: number&lt;br&gt;updatedAt: date-time&lt;br&gt;score: 1..5.0, bước 0.5&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="Rating">
+          <mxGeometry x="0" y="44" width="440" height="161" as="geometry" />
+        </mxCell>
+        <mxCell id="WatchProgress" value="WatchProgress" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="650" y="830" width="440" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="WatchProgress.fields" value="&lt;div&gt;« API representation »&lt;br&gt;movieId: uuid&lt;br&gt;positionSeconds: integer&lt;br&gt;completed: boolean&lt;br&gt;updatedAt: date-time&lt;br&gt;GET list nhúng thêm movie&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="WatchProgress">
+          <mxGeometry x="0" y="44" width="440" height="191" as="geometry" />
+        </mxCell>
+        <mxCell id="Movie" value="MovieDetail / MovieSummary" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="190" width="450" height="580" as="geometry" />
+        </mxCell>
+        <mxCell id="Movie.fields" value="&lt;div&gt;« API representation »&lt;br&gt;id: uuid&lt;br&gt;title: string&lt;br&gt;durationMinutes: integer&lt;br&gt;genres: Genre[]&lt;br&gt;averageRating: float&lt;br&gt;ratingCount: integer&lt;br&gt;hasVideo: boolean&lt;br&gt;streamUrl?: uri&lt;br&gt;durationMinutes đổi sang giây khi so progress&lt;br&gt;Không lộ video_path nội bộ&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="Movie">
+          <mxGeometry x="0" y="44" width="450" height="536" as="geometry" />
+        </mxCell>
+        <mxCell id="GenrePreferences" value="GenrePreferences" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dcfce7;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1250" width="410" height="205" as="geometry" />
+        </mxCell>
+        <mxCell id="GenrePreferences.fields" value="&lt;div&gt;« API representation »&lt;br&gt;genreIds: uuid[]&lt;br&gt;genres: Genre[]&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="GenrePreferences">
+          <mxGeometry x="0" y="44" width="410" height="161" as="geometry" />
+        </mxCell>
+        <mxCell id="Genre" value="Genre" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="1250" width="450" height="205" as="geometry" />
+        </mxCell>
+        <mxCell id="Genre.fields" value="&lt;div&gt;« API representation »&lt;br&gt;id: uuid&lt;br&gt;name: string&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="Genre">
+          <mxGeometry x="0" y="44" width="450" height="161" as="geometry" />
+        </mxCell>
+        <mxCell id="RecommendationResult" value="RecommendationResult" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#f3e8ff;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="650" y="1620" width="440" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="RecommendationResult.fields" value="&lt;div&gt;« AI dự kiến · Nguyên »&lt;br&gt;items: RecommendationItem[]&lt;br&gt;strategy: string&lt;br&gt;modelVersion: string | null&lt;br&gt;generatedAt: date-time&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="RecommendationResult">
+          <mxGeometry x="0" y="44" width="440" height="221" as="geometry" />
+        </mxCell>
+        <mxCell id="RecommendationItem" value="RecommendationItem" style="swimlane;html=1;startSize=44;horizontal=1;rounded=0;fillColor=#f3e8ff;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontStyle=1;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="1620" width="450" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="RecommendationItem.fields" value="&lt;div&gt;« AI dự kiến · Nguyên »&lt;br&gt;movie: MovieSummary&lt;br&gt;score: number&lt;br&gt;reason: string&lt;br&gt;score xếp hạng: 0..1&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="RecommendationItem">
+          <mxGeometry x="0" y="44" width="450" height="191" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.22641509433962265;exitPerimeter=0;entryX=0.0;entryY=0.2926829268292683;entryPerimeter=0;startArrow=none;endArrow=none;dashed=1;" edge="1" parent="1" source="User" target="Favorite">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref0-caption" value="&lt;div&gt;owner = JWT sub&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="445.0" y="216.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.5283018867924528;exitPerimeter=0;entryX=0.0;entryY=0.43902439024390244;entryPerimeter=0;startArrow=none;endArrow=none;dashed=1;" edge="1" parent="1" source="User" target="Rating">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="330" />
+              <mxPoint x="550" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-ref1-caption" value="&lt;div&gt;owner = JWT sub&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="490.0" y="566.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.8301886792452831;exitPerimeter=0;entryX=0.0;entryY=0.425531914893617;entryPerimeter=0;startArrow=none;endArrow=none;dashed=1;" edge="1" parent="1" source="User" target="WatchProgress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="410" />
+              <mxPoint x="510" y="930" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-ref2-caption" value="&lt;div&gt;owner = JWT sub&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="470.0" y="896.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;startArrow=none;endArrow=none;dashed=1;" edge="1" parent="1" source="User" target="GenrePreferences">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref3-caption" value="&lt;div&gt;owner = JWT sub&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="145.0" y="818.5" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.4634146341463415;exitPerimeter=0;entryX=0.0;entryY=0.16379310344827586;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="Favorite" target="Movie">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref4-caption" value="&lt;div&gt;movie: 1 embedded&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1140.0" y="251.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.4878048780487805;exitPerimeter=0;entryX=0.0;entryY=0.7241379310344828;entryPerimeter=0;startArrow=none;endArrow=none;dashed=1;" edge="1" parent="1" source="Rating" target="Movie">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref5-caption" value="&lt;div&gt;movieId → id (1)&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1140.0" y="576.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.46808510638297873;exitPerimeter=0;entryX=0.0;entryY=0.896551724137931;entryPerimeter=0;startArrow=none;endArrow=none;dashed=1;" edge="1" parent="1" source="WatchProgress" target="Movie">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1250" y="940" />
+              <mxPoint x="1250" y="710" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-ref6-caption" value="&lt;div&gt;movieId → id (1)&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1220.0" y="676.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="Movie" target="Genre">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref7-caption" value="&lt;div&gt;genres: 0..* embedded&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1525.0" y="976.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.4878048780487805;exitPerimeter=0;entryX=0.0;entryY=0.4878048780487805;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="GenrePreferences" target="Genre">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref8-caption" value="&lt;div&gt;genres: 0..* embedded&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="825.0" y="1316.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.49056603773584906;exitPerimeter=0;entryX=0.0;entryY=0.5531914893617021;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="RecommendationResult" target="RecommendationItem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref9-caption" value="&lt;div&gt;items: 0..* embedded&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=14;fontColor=#475569;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1140.0" y="1716.0" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="api-ref10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;strokeWidth=1.8;exitX=1.0;exitY=0.46808510638297873;exitPerimeter=0;entryX=1.0;entryY=0.8275862068965517;entryPerimeter=0;startArrow=none;endArrow=none;" edge="1" parent="1" source="RecommendationItem" target="Movie">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1885" y="1730" />
+              <mxPoint x="1885" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="repr-note0" value="&lt;div&gt;Nét liền: object/array nhúng trong JSON. Nét đứt: UUID reference hoặc ngữ cảnh owner, không phải khóa ngoại DB.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1910" width="1810" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="repr-note1" value="&lt;div&gt;1 / 0..*: số object trong representation hoặc số resource được tham chiếu. Không biểu diễn lifecycle/composition của bảng.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1952" width="1810" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="repr-note2" value="&lt;div&gt;Đây là trích chọn các trường phục vụ mô hình; schema đầy đủ, required/nullable và methods nằm trong OpenAPI và trang 01.&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=17;fontColor=#334155;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1994" width="1810" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

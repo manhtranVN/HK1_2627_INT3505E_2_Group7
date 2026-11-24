@@ -1,0 +1,8 @@
+MNP design artifact validation: PASS
+19 operations (8 QPhong); 29 schemas; 8 tables; 10 foreign keys.
+921 checks; 132 examples; 19 boundary cases.
+openapi.yaml SHA256: 86420624ecc184936c466b2c3c0c60a9180e2245a8617941f8f50a831fbd630c
+
+Scope: core preservation, specification, examples, metadata, diagram XML, generated synchronization and local links.
+ERD: compact layout/routes retained; PK/FK highlighted; Catalog slug/director/cast storage added. Resource Model: two pages; AI marked planned.
+Not executed: Flask/React, database migration, JWT, stateful PUT/idempotency, AI or integration tests.

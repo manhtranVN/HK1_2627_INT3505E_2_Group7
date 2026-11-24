@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: MNP - Movie Navigator Promax API
-  version: 0.2.0
+  version: 0.3.0
   description: |
     RESTful API contract cho nền tảng xem phim online **MNP - Movie Navigator Promax** (Đồ án INT3505E - Nhóm 7).
 
@@ -42,8 +42,8 @@ tags:
   - name: Genres
     description: Tra cứu và quản trị danh mục thể loại phim
   # Reserved tags for upcoming PRs (uncomment when merging v1.0):
-  # - name: Me
-  #   description: Tương tác cá nhân hóa của người dùng (QPhong - feat/data-model-me-api)
+  - name: Me
+    description: Tương tác cá nhân hóa của người dùng (QPhong - feat/data-model-me-api)
   # - name: Recommendations
   #   description: Gợi ý phim theo nội dung TF-IDF + cosine (Nguyên - feat/brief-ai-plan)
 
@@ -440,6 +440,441 @@ paths:
   #   - GET    /me/recommendations
   #   - GET    /movies/{movieId}/similar
   # =========================================================================
+
+  /me/favorites:
+    get:
+      tags:
+      - Me
+      operationId: listMyFavorites
+      summary: List my favorite published movies
+      description: Identity comes from JWT sub. Order createdAt DESC then movieId ASC. Hidden movies are excluded
+        from both items and pagination totals.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoritePage'
+              example:
+                items:
+                - movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                  movie:
+                    id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                    title: Sintel
+                    slug: sintel-2010
+                    releaseYear: 2010
+                    durationMinutes: 15
+                    posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                    genres:
+                    - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                      name: Hoạt hình
+                      slug: animation
+                    averageRating: 4.6
+                    ratingCount: 128
+                    hasVideo: true
+                    status: published
+                  createdAt: '2026-11-24T03:00:00Z'
+                meta:
+                  page: 1
+                  limit: 20
+                  totalItems: 1
+                  totalPages: 1
+                  hasNext: false
+                  hasPrev: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      parameters:
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      x-db-tables:
+      - favorites
+      - movies
+      - genres
+      - movie_genres
+      - ratings
+      security:
+      - bearerAuth: []
+  /me/favorites/{movieId}:
+    put:
+      tags:
+      - Me
+      operationId: putMyFavorite
+      summary: Ensure the movie is a favorite
+      description: Create favorite for JWT sub (201 with Location), or return existing state unchanged (200). No request
+        body. Repeated PUT never creates another row or changes createdAt. Movie must be published.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '200':
+          description: Existing favorite, unchanged.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+              example:
+                movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                movie:
+                  id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                  title: Sintel
+                  slug: sintel-2010
+                  releaseYear: 2010
+                  durationMinutes: 15
+                  posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                  genres:
+                  - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    name: Hoạt hình
+                    slug: animation
+                  averageRating: 4.6
+                  ratingCount: 128
+                  hasVideo: true
+                  status: published
+                createdAt: '2026-11-24T03:00:00Z'
+        '201':
+          description: Favorite created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+              example:
+                movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                movie:
+                  id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                  title: Sintel
+                  slug: sintel-2010
+                  releaseYear: 2010
+                  durationMinutes: 15
+                  posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                  genres:
+                  - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    name: Hoạt hình
+                    slug: animation
+                  averageRating: 4.6
+                  ratingCount: 128
+                  hasVideo: true
+                  status: published
+                createdAt: '2026-11-24T03:00:00Z'
+          headers:
+            Location:
+              description: URI of the current user favorite.
+              schema:
+                type: string
+                example: /api/v1/me/favorites/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+      parameters:
+      - $ref: '#/components/parameters/MovieIdPath'
+      x-db-tables:
+      - favorites
+      - movies
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Me
+      operationId: deleteMyFavorite
+      summary: Remove a favorite
+      description: Always 204 for a valid movie UUID even when the relation/movie is absent or hidden. Operates only
+        on JWT sub and never reveals movie visibility.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '204':
+          description: Successful response with no body.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      parameters:
+      - $ref: '#/components/parameters/MovieIdPath'
+      x-db-tables:
+      - favorites
+      security:
+      - bearerAuth: []
+  /me/ratings/{movieId}:
+    put:
+      tags:
+      - Me
+      operationId: putMyRating
+      summary: Create or replace my rating
+      description: 200 on create or replace. One row per user/movie. Same score is a no-op and preserves updatedAt.
+        score is 1..5.0 in steps of 0.5. Movie must be published.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+              example:
+                movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                score: 4.5
+                updatedAt: '2026-11-24T03:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      parameters:
+      - $ref: '#/components/parameters/MovieIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingRequest'
+            example:
+              score: 4.5
+      x-db-tables:
+      - ratings
+      - movies
+      security:
+      - bearerAuth: []
+  /me/watch-progress:
+    get:
+      tags:
+      - Me
+      operationId: listMyContinueWatching
+      summary: List my unfinished movies
+      description: Only completed=false, positionSeconds>0 and published movies. Order updatedAt DESC then movieId
+        ASC. Pagination totals apply after all filters.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContinueWatchingPage'
+              example:
+                items:
+                - movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                  positionSeconds: 630
+                  completed: false
+                  updatedAt: '2026-11-24T03:00:00Z'
+                  movie:
+                    id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                    title: Sintel
+                    slug: sintel-2010
+                    releaseYear: 2010
+                    durationMinutes: 15
+                    posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                    genres:
+                    - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                      name: Hoạt hình
+                      slug: animation
+                    averageRating: 4.6
+                    ratingCount: 128
+                    hasVideo: true
+                    status: published
+                meta:
+                  page: 1
+                  limit: 20
+                  totalItems: 1
+                  totalPages: 1
+                  hasNext: false
+                  hasPrev: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      parameters:
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      x-db-tables:
+      - watch_progress
+      - movies
+      - genres
+      - movie_genres
+      - ratings
+      security:
+      - bearerAuth: []
+  /me/watch-progress/{movieId}:
+    put:
+      tags:
+      - Me
+      operationId: putMyWatchProgress
+      summary: Replace my current watch progress
+      description: 200 on create or replace. Both state fields are required. 0 <= positionSeconds <= duration_seconds.
+        completed is explicitly supplied. Same state preserves updatedAt. MVP uses last committed write wins; seeking
+        backwards is allowed. Movie must be published and have a video reference, otherwise 404. user_id comes from
+        JWT sub.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchProgress'
+              example:
+                movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                positionSeconds: 630
+                completed: false
+                updatedAt: '2026-11-24T03:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      parameters:
+      - $ref: '#/components/parameters/MovieIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchProgressRequest'
+            example:
+              positionSeconds: 630
+              completed: false
+      x-db-tables:
+      - watch_progress
+      - movies
+      security:
+      - bearerAuth: []
+  /me/preferences/genres:
+    get:
+      tags:
+      - Me
+      operationId: getMyGenrePreferences
+      summary: Get my genre preferences
+      description: Empty selections return genreIds=[] and genres=[]. Results sorted by genre UUID.
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenrePreferences'
+              example:
+                genreIds:
+                - 33333333-3333-4333-8333-333333333333
+                genres:
+                - id: 33333333-3333-4333-8333-333333333333
+                  name: Science Fiction
+                  slug: science-fiction
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-db-tables:
+      - user_genre_preferences
+      - genres
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - Me
+      operationId: putMyGenrePreferences
+      summary: Replace all my genre preferences
+      description: 'Atomic replacement of the set, not append. [] clears all selections. Duplicate or more than 20
+        IDs: 422. Unknown genre: 404 with no changes applied. Reordering the same set is a no-op. Identity from JWT
+        sub only; results sorted by genre UUID.'
+      x-owner: QPhong
+      x-roles:
+      - user
+      - admin
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenrePreferences'
+              example:
+                genreIds:
+                - 33333333-3333-4333-8333-333333333333
+                genres:
+                - id: 33333333-3333-4333-8333-333333333333
+                  name: Science Fiction
+                  slug: science-fiction
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenrePreferencesRequest'
+            example:
+              genreIds:
+              - 33333333-3333-4333-8333-333333333333
+      x-db-tables:
+      - user_genre_preferences
+      - genres
+      security:
+      - bearerAuth: []
 
 components:
   securitySchemes:
@@ -1126,6 +1561,354 @@ components:
         meta:
           $ref: '#/components/schemas/PageMeta'
 
+    Favorite:
+      type: object
+      additionalProperties: false
+      properties:
+        movieId:
+          type: string
+          format: uuid
+          example: 22222222-2222-4222-8222-222222222222
+        movie:
+          $ref: '#/components/schemas/MovieSummary'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-11-24T03:00:00Z'
+      x-db-table: favorites
+      x-derived-fields:
+      - movie
+      required:
+      - movieId
+      - movie
+      - createdAt
+      example:
+        movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+        movie:
+          id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+          title: Sintel
+          slug: sintel-2010
+          releaseYear: 2010
+          durationMinutes: 15
+          posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+          genres:
+          - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+            name: Hoạt hình
+            slug: animation
+          averageRating: 4.6
+          ratingCount: 128
+          hasVideo: true
+          status: published
+        createdAt: '2026-11-24T03:00:00Z'
+      x-field-mapping:
+        movieId: movie_id
+        createdAt: created_at
+    RatingRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        score:
+          type: number
+          minimum: 1
+          maximum: 5
+          multipleOf: 0.5
+          example: 4.5
+      required:
+      - score
+      example:
+        score: 4.5
+      x-field-mapping:
+        score: score
+    Rating:
+      type: object
+      additionalProperties: false
+      properties:
+        movieId:
+          type: string
+          format: uuid
+          example: 22222222-2222-4222-8222-222222222222
+        score:
+          type: number
+          minimum: 1
+          maximum: 5
+          multipleOf: 0.5
+          example: 4.5
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-11-24T03:00:00Z'
+      x-db-table: ratings
+      required:
+      - movieId
+      - score
+      - updatedAt
+      example:
+        movieId: 22222222-2222-4222-8222-222222222222
+        score: 4.5
+        updatedAt: '2026-11-24T03:00:00Z'
+      x-field-mapping:
+        movieId: movie_id
+        score: score
+        updatedAt: updated_at
+    WatchProgressRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        positionSeconds:
+          type: integer
+          minimum: 0
+          example: 630
+          description: Absolute position in seconds; at most the movie duration converted from durationMinutes.
+        completed:
+          type: boolean
+          example: false
+      description: Replace current state. positionSeconds <= movies.duration_seconds is a service rule; durationMinutes
+        in the core API is converted to seconds. completed is explicit.
+      required:
+      - positionSeconds
+      - completed
+      example:
+        positionSeconds: 630
+        completed: false
+      x-field-mapping:
+        positionSeconds: position_seconds
+        completed: completed
+    WatchProgress:
+      type: object
+      additionalProperties: false
+      properties:
+        movieId:
+          type: string
+          format: uuid
+          example: 22222222-2222-4222-8222-222222222222
+        positionSeconds:
+          type: integer
+          minimum: 0
+          example: 630
+          description: Absolute position in seconds; at most the movie duration converted from durationMinutes.
+        completed:
+          type: boolean
+          example: false
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-11-24T03:00:00Z'
+      x-db-table: watch_progress
+      required:
+      - movieId
+      - positionSeconds
+      - completed
+      - updatedAt
+      example:
+        movieId: 22222222-2222-4222-8222-222222222222
+        positionSeconds: 630
+        completed: false
+        updatedAt: '2026-11-24T03:00:00Z'
+      x-field-mapping:
+        movieId: movie_id
+        positionSeconds: position_seconds
+        completed: completed
+        updatedAt: updated_at
+    ContinueWatchingItem:
+      type: object
+      additionalProperties: false
+      properties:
+        movieId:
+          type: string
+          format: uuid
+          example: 22222222-2222-4222-8222-222222222222
+        positionSeconds:
+          type: integer
+          minimum: 0
+          example: 630
+          description: Absolute position in seconds; at most the movie duration converted from durationMinutes.
+        completed:
+          type: boolean
+          example: false
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-11-24T03:00:00Z'
+        movie:
+          $ref: '#/components/schemas/MovieSummary'
+      x-db-table: watch_progress
+      x-derived-fields:
+      - movie
+      required:
+      - movieId
+      - positionSeconds
+      - completed
+      - updatedAt
+      - movie
+      example:
+        movieId: 22222222-2222-4222-8222-222222222222
+        positionSeconds: 630
+        completed: false
+        updatedAt: '2026-11-24T03:00:00Z'
+        movie:
+          id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+          title: Sintel
+          slug: sintel-2010
+          releaseYear: 2010
+          durationMinutes: 15
+          posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+          genres:
+          - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+            name: Hoạt hình
+            slug: animation
+          averageRating: 4.6
+          ratingCount: 128
+          hasVideo: true
+          status: published
+      x-field-mapping:
+        movieId: movie_id
+        positionSeconds: position_seconds
+        completed: completed
+        updatedAt: updated_at
+    GenrePreferencesRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        genreIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 33333333-3333-4333-8333-333333333333
+          uniqueItems: true
+          maxItems: 20
+          example:
+          - 33333333-3333-4333-8333-333333333333
+      description: Replace the entire selection. Empty genreIds clears it. All IDs must exist; no partial updates on
+        failure.
+      required:
+      - genreIds
+      example:
+        genreIds:
+        - 33333333-3333-4333-8333-333333333333
+      x-field-mapping:
+        genreIds: genre_ids
+    GenrePreferences:
+      type: object
+      additionalProperties: false
+      properties:
+        genreIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 33333333-3333-4333-8333-333333333333
+          uniqueItems: true
+          maxItems: 20
+          example:
+          - 33333333-3333-4333-8333-333333333333
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+          maxItems: 20
+      x-db-table: user_genre_preferences
+      x-derived-fields:
+      - genreIds
+      - genres
+      required:
+      - genreIds
+      - genres
+      example:
+        genreIds:
+        - 33333333-3333-4333-8333-333333333333
+        genres:
+        - id: 33333333-3333-4333-8333-333333333333
+          name: Science Fiction
+          slug: science-fiction
+      x-field-mapping: {}
+    FavoritePage:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Favorite'
+        meta:
+          $ref: '#/components/schemas/PageMeta'
+      required:
+      - items
+      - meta
+      example:
+        items:
+        - movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+          movie:
+            id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+            title: Sintel
+            slug: sintel-2010
+            releaseYear: 2010
+            durationMinutes: 15
+            posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+            genres:
+            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+              name: Hoạt hình
+              slug: animation
+            averageRating: 4.6
+            ratingCount: 128
+            hasVideo: true
+            status: published
+          createdAt: '2026-11-24T03:00:00Z'
+        meta:
+          page: 1
+          limit: 20
+          totalItems: 1
+          totalPages: 1
+          hasNext: false
+          hasPrev: false
+      x-field-mapping:
+        items: data
+        meta: meta
+    ContinueWatchingPage:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContinueWatchingItem'
+        meta:
+          $ref: '#/components/schemas/PageMeta'
+      required:
+      - items
+      - meta
+      example:
+        items:
+        - movieId: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+          positionSeconds: 630
+          completed: false
+          updatedAt: '2026-11-24T03:00:00Z'
+          movie:
+            id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+            title: Sintel
+            slug: sintel-2010
+            releaseYear: 2010
+            durationMinutes: 15
+            posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+            genres:
+            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+              name: Hoạt hình
+              slug: animation
+            averageRating: 4.6
+            ratingCount: 128
+            hasVideo: true
+            status: published
+        meta:
+          page: 1
+          limit: 20
+          totalItems: 1
+          totalPages: 1
+          hasNext: false
+          hasPrev: false
+      x-field-mapping:
+        items: data
+        meta: meta
+
   responses:
     BadRequest:
       description: Cú pháp JSON hoặc tham số đường dẫn/truy vấn sai định dạng (HTTP 400)
@@ -1236,3 +2019,351 @@ components:
             instance: /api/v1/movies
             traceId: 77777777-8888-4999-8aaa-bbbbbbbbbbbb
             errorCode: INTERNAL_SERVER_ERROR
+
+x-database:
+  engine: PostgreSQL
+  description: 'Design metadata; not a migration. Source for build_design.py; do not hand-edit generated diagrams/dictionaries.
+    UUIDs are generated by the future server. All FK columns are NOT NULL. Physical deletes: users cascade to personal
+    relations; movies/genres restrict while referenced. Admin DELETE only hides movies.'
+  tables:
+    users:
+      columns:
+      - name: id
+        type: uuid
+        nullable: false
+        description: Internal account ID.
+        primary_key: true
+      - name: email
+        type: varchar(254)
+        nullable: false
+        description: Normalized lowercase email; unique.
+        unique: true
+      - name: password_hash
+        type: text
+        nullable: false
+        description: Password hash; never serialized.
+      - name: display_name
+        type: varchar(100)
+        nullable: false
+        description: Public display name.
+      - name: role
+        type: varchar(16)
+        nullable: false
+        description: user or admin.
+        default: user
+      - name: status
+        type: varchar(16)
+        nullable: false
+        description: active or disabled.
+        default: active
+      - name: created_at
+        type: timestamptz
+        nullable: false
+        description: UTC creation time.
+        default: now()
+      checks:
+      - role IN ('user','admin')
+      - status IN ('active','disabled')
+    movies:
+      columns:
+      - name: id
+        type: uuid
+        nullable: false
+        description: Internal movie ID.
+        primary_key: true
+      - name: tmdb_id
+        type: bigint
+        nullable: true
+        description: Optional external TMDB ID.
+        unique: true
+      - name: slug
+        type: varchar(255)
+        nullable: false
+        unique: true
+        description: Stable URL slug required by the shared Catalog contract.
+      - name: title
+        type: varchar(255)
+        nullable: false
+        description: Movie title.
+      - name: description
+        type: text
+        nullable: false
+        description: Movie synopsis.
+        default: ''
+      - name: release_date
+        type: date
+        nullable: true
+        description: Release date.
+      - name: duration_seconds
+        type: integer
+        nullable: false
+        description: Duration in seconds.
+      - name: poster_url
+        type: text
+        nullable: true
+        description: Public poster URI.
+      - name: video_path
+        type: text
+        nullable: true
+        description: Internal storage key; not public.
+      - name: is_published
+        type: boolean
+        nullable: false
+        description: Visibility flag.
+        default: 'false'
+      - name: created_at
+        type: timestamptz
+        nullable: false
+        description: UTC creation time.
+        default: now()
+      - name: updated_at
+        type: timestamptz
+        nullable: false
+        description: UTC time of actual state change.
+        default: now()
+      - name: director
+        type: varchar(255)
+        nullable: false
+        default: ''
+        description: Director displayed by the shared MovieDetail schema.
+      - name: cast
+        type: jsonb
+        nullable: false
+        default: '[]'
+        description: Ordered actor names returned as a JSON array.
+      checks:
+      - duration_seconds > 0
+      - tmdb_id IS NULL OR tmdb_id > 0
+      service_rules:
+      - API durationMinutes = ceil(duration_seconds / 60); positionSeconds always uses seconds.
+      - Published movie must provide a valid release year and poster URL required by core MovieSummary.
+      - status maps published/hidden to is_published; averageRating is 0 when no ratings exist.
+    genres:
+      columns:
+      - name: id
+        type: uuid
+        nullable: false
+        description: Internal genre ID.
+        primary_key: true
+      - name: name
+        type: varchar(80)
+        nullable: false
+        description: Canonical genre label; unique.
+        unique: true
+      - name: slug
+        type: varchar(64)
+        nullable: false
+        unique: true
+        description: Stable URL slug required by the shared Catalog contract.
+      checks:
+      - length(trim(name)) > 0
+    movie_genres:
+      columns:
+      - name: movie_id
+        type: uuid
+        nullable: false
+        description: Movie FK.
+        primary_key: true
+        references: movies.id
+      - name: genre_id
+        type: uuid
+        nullable: false
+        description: Genre FK.
+        primary_key: true
+        references: genres.id
+      checks: []
+    user_genre_preferences:
+      columns:
+      - name: user_id
+        type: uuid
+        nullable: false
+        description: Owner FK.
+        primary_key: true
+        references: users.id
+      - name: genre_id
+        type: uuid
+        nullable: false
+        description: Selected genre FK.
+        primary_key: true
+        references: genres.id
+      checks: []
+    favorites:
+      columns:
+      - name: user_id
+        type: uuid
+        nullable: false
+        description: Owner FK.
+        primary_key: true
+        references: users.id
+      - name: movie_id
+        type: uuid
+        nullable: false
+        description: Movie FK.
+        primary_key: true
+        references: movies.id
+      - name: created_at
+        type: timestamptz
+        nullable: false
+        description: Time first added; unchanged on repeated PUT.
+        default: now()
+      checks: []
+    ratings:
+      columns:
+      - name: user_id
+        type: uuid
+        nullable: false
+        description: Owner FK.
+        primary_key: true
+        references: users.id
+      - name: movie_id
+        type: uuid
+        nullable: false
+        description: Movie FK.
+        primary_key: true
+        references: movies.id
+      - name: score
+        type: numeric(2,1)
+        nullable: false
+        description: Star rating, steps of 0.5.
+      - name: updated_at
+        type: timestamptz
+        nullable: false
+        description: Actual state-change time.
+        default: now()
+      checks:
+      - score >= 1.0 AND score <= 5.0
+      - mod(score, 0.5) = 0
+    watch_progress:
+      columns:
+      - name: user_id
+        type: uuid
+        nullable: false
+        description: Owner FK.
+        primary_key: true
+        references: users.id
+      - name: movie_id
+        type: uuid
+        nullable: false
+        description: Movie FK.
+        primary_key: true
+        references: movies.id
+      - name: position_seconds
+        type: integer
+        nullable: false
+        description: Current absolute position.
+        default: '0'
+      - name: completed
+        type: boolean
+        nullable: false
+        description: Explicit completion state.
+        default: 'false'
+      - name: updated_at
+        type: timestamptz
+        nullable: false
+        description: Actual state-change time.
+        default: now()
+      checks:
+      - position_seconds >= 0
+      service_rules:
+      - position_seconds <= movies.duration_seconds
+      - Movie must be published and have video_path for a progress write.
+x-design-documents:
+  erd: ../docs/design/erd.drawio
+  resource_model: ../docs/design/resource-model.drawio
+  resource_vs_db: ../docs/design/resource-vs-db.md
+  handoff: ../docs/handoff/qphong-week12.md
+  resource_representations: ../docs/design/resource-representations.svg
+x-qphong-review:
+  base: feat/openapi-core@7bf99e6
+  scope: 8 Me operations; six required and two supporting GETs. AI endpoints remain reserved for Nguyen.
+  rating: 1..5 in steps of 0.5, aligned with core conventions; group review pending.
+  ownership: JWT sub only; no userId accepted in request.
+
+x-resource-context:
+  owner: Nguyên
+  status: planned; not part of the QPhong API changes
+  paths:
+  - /me/recommendations
+  - /movies/{movieId}/similar
+  schemas:
+    RecommendationResult:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/x-resource-context/schemas/RecommendationItem'
+          maxItems: 50
+        strategy:
+          type: string
+          enum:
+          - content_based
+          - genre_fallback
+          - popular_fallback
+        modelVersion:
+          type: string
+          nullable: true
+        generatedAt:
+          type: string
+          format: date-time
+      description: score is a normalized ranking score, not a star rating or probability. Fallback may have model_version=null.
+        Fewer than limit results, including [], are valid when the catalog is small.
+      required:
+      - items
+      - strategy
+      - modelVersion
+      - generatedAt
+    RecommendationItem:
+      type: object
+      additionalProperties: false
+      properties:
+        movie:
+          $ref: '#/components/schemas/MovieSummary'
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - movie
+      - score
+      - reason
+x-api-db-mapping:
+  UserProfile:
+    table: users
+    fields:
+      displayName: display_name
+      createdAt: created_at
+    derived: []
+  Genre:
+    table: genres
+    fields: {}
+    derived: []
+  MovieSummary:
+    table: movies
+    fields:
+      posterUrl: poster_url
+      ratingCount: ratings count
+      averageRating: ratings average or 0
+      durationMinutes: ceil(duration_seconds / 60)
+      releaseYear: year(release_date)
+      status: is_published → published/hidden
+    derived:
+    - genres
+    - ratingCount
+    - averageRating
+    - hasVideo
+  MovieDetail:
+    table: movies
+    fields:
+      overview: description
+      streamUrl: authorized URL from video_path
+      tmdbId: tmdb_id
+      createdAt: created_at
+      updatedAt: updated_at
+    derived:
+    - streamUrl

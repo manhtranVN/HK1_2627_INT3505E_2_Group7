@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1910" height="2060" viewBox="0 0 1910 2060" font-family="Arial, sans-serif">
+<rect width="100%" height="100%" fill="white"/>
+<defs>
+<marker id="one" viewBox="0 0 24 24" refX="24" refY="12" markerWidth="24" markerHeight="24" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M6 3V21 M13 3V21" fill="none" stroke="#64748b" stroke-width="2"/></marker>
+<marker id="many" viewBox="0 0 30 26" refX="29" refY="13" markerWidth="30" markerHeight="26" orient="auto" markerUnits="userSpaceOnUse"><circle cx="6" cy="13" r="4" fill="white" stroke="#64748b" stroke-width="2"/><path d="M15 13L29 3 M15 13L29 23 M15 13H29" fill="none" stroke="#64748b" stroke-width="2"/></marker></defs>
+<text x="58" y="72.0" font-size="32" fill="#0f172a" font-weight="bold">MNP | API representations &amp; resource references</text>
+<text x="58" y="127.125" font-size="19" fill="#334155" font-weight="normal">Góc nhìn consumer: trường JSON, UUID tham chiếu, object nhúng và kết quả tính toán; không phải ERD hay Domain Model</text>
+<rect x="50" y="190" width="410" height="265" fill="white" stroke="#94a3b8"/>
+<rect x="50" y="190" width="410" height="44" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="62" y="219.875" font-size="21" fill="#0f172a" font-weight="bold">UserProfile</text>
+<text x="58" y="287.125" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="58" y="308.375" font-size="17" fill="#334155" font-weight="normal">id: uuid</text>
+<text x="58" y="329.625" font-size="17" fill="#334155" font-weight="normal">displayName: string</text>
+<text x="58" y="350.875" font-size="17" fill="#334155" font-weight="normal">email: email</text>
+<text x="58" y="372.125" font-size="17" fill="#334155" font-weight="normal">role: UserRole</text>
+<text x="58" y="393.375" font-size="17" fill="#334155" font-weight="normal">Profile: GET /auth/me</text>
+<text x="58" y="414.625" font-size="17" fill="#334155" font-weight="normal">/me/* owner = JWT sub</text>
+<rect x="650" y="190" width="440" height="205" fill="white" stroke="#94a3b8"/>
+<rect x="650" y="190" width="440" height="44" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="662" y="219.875" font-size="21" fill="#0f172a" font-weight="bold">Favorite</text>
+<text x="658" y="289.0" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="658" y="310.25" font-size="17" fill="#334155" font-weight="normal">movieId: uuid</text>
+<text x="658" y="331.5" font-size="17" fill="#334155" font-weight="normal">movie: MovieSummary</text>
+<text x="658" y="352.75" font-size="17" fill="#334155" font-weight="normal">createdAt: date-time</text>
+<rect x="650" y="510" width="440" height="205" fill="white" stroke="#94a3b8"/>
+<rect x="650" y="510" width="440" height="44" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="662" y="539.875" font-size="21" fill="#0f172a" font-weight="bold">Rating</text>
+<text x="658" y="598.375" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="658" y="619.625" font-size="17" fill="#334155" font-weight="normal">movieId: uuid</text>
+<text x="658" y="640.875" font-size="17" fill="#334155" font-weight="normal">score: number</text>
+<text x="658" y="662.125" font-size="17" fill="#334155" font-weight="normal">updatedAt: date-time</text>
+<text x="658" y="683.375" font-size="17" fill="#334155" font-weight="normal">score: 1..5.0, bước 0.5</text>
+<rect x="650" y="830" width="440" height="235" fill="white" stroke="#94a3b8"/>
+<rect x="650" y="830" width="440" height="44" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="662" y="859.875" font-size="21" fill="#0f172a" font-weight="bold">WatchProgress</text>
+<text x="658" y="922.75" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="658" y="944.0" font-size="17" fill="#334155" font-weight="normal">movieId: uuid</text>
+<text x="658" y="965.25" font-size="17" fill="#334155" font-weight="normal">positionSeconds: integer</text>
+<text x="658" y="986.5" font-size="17" fill="#334155" font-weight="normal">completed: boolean</text>
+<text x="658" y="1007.75" font-size="17" fill="#334155" font-weight="normal">updatedAt: date-time</text>
+<text x="658" y="1029.0" font-size="17" fill="#334155" font-weight="normal">GET list nhúng thêm movie</text>
+<rect x="1410" y="190" width="450" height="580" fill="white" stroke="#94a3b8"/>
+<rect x="1410" y="190" width="450" height="44" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="1422" y="219.875" font-size="21" fill="#0f172a" font-weight="bold">MovieDetail / MovieSummary</text>
+<text x="1418" y="402.125" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="1418" y="423.375" font-size="17" fill="#334155" font-weight="normal">id: uuid</text>
+<text x="1418" y="444.625" font-size="17" fill="#334155" font-weight="normal">title: string</text>
+<text x="1418" y="465.875" font-size="17" fill="#334155" font-weight="normal">durationMinutes: integer</text>
+<text x="1418" y="487.125" font-size="17" fill="#334155" font-weight="normal">genres: Genre[]</text>
+<text x="1418" y="508.375" font-size="17" fill="#334155" font-weight="normal">averageRating: float</text>
+<text x="1418" y="529.625" font-size="17" fill="#334155" font-weight="normal">ratingCount: integer</text>
+<text x="1418" y="550.875" font-size="17" fill="#334155" font-weight="normal">hasVideo: boolean</text>
+<text x="1418" y="572.125" font-size="17" fill="#334155" font-weight="normal">streamUrl?: uri</text>
+<text x="1418" y="593.375" font-size="17" fill="#334155" font-weight="normal">durationMinutes đổi sang giây khi so progress</text>
+<text x="1418" y="614.625" font-size="17" fill="#334155" font-weight="normal">Không lộ video_path nội bộ</text>
+<rect x="50" y="1250" width="410" height="205" fill="white" stroke="#94a3b8"/>
+<rect x="50" y="1250" width="410" height="44" fill="#dcfce7" stroke="#94a3b8"/>
+<text x="62" y="1279.875" font-size="21" fill="#0f172a" font-weight="bold">GenrePreferences</text>
+<text x="58" y="1359.625" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="58" y="1380.875" font-size="17" fill="#334155" font-weight="normal">genreIds: uuid[]</text>
+<text x="58" y="1402.125" font-size="17" fill="#334155" font-weight="normal">genres: Genre[]</text>
+<rect x="1410" y="1250" width="450" height="205" fill="white" stroke="#94a3b8"/>
+<rect x="1410" y="1250" width="450" height="44" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="1422" y="1279.875" font-size="21" fill="#0f172a" font-weight="bold">Genre</text>
+<text x="1418" y="1359.625" font-size="17" fill="#334155" font-weight="normal">« API representation »</text>
+<text x="1418" y="1380.875" font-size="17" fill="#334155" font-weight="normal">id: uuid</text>
+<text x="1418" y="1402.125" font-size="17" fill="#334155" font-weight="normal">name: string</text>
+<rect x="650" y="1620" width="440" height="265" fill="white" stroke="#94a3b8"/>
+<rect x="650" y="1620" width="440" height="44" fill="#f3e8ff" stroke="#94a3b8"/>
+<text x="662" y="1649.875" font-size="21" fill="#0f172a" font-weight="bold">RecommendationResult</text>
+<text x="658" y="1738.375" font-size="17" fill="#334155" font-weight="normal">« AI dự kiến · Nguyên »</text>
+<text x="658" y="1759.625" font-size="17" fill="#334155" font-weight="normal">items: RecommendationItem[]</text>
+<text x="658" y="1780.875" font-size="17" fill="#334155" font-weight="normal">strategy: string</text>
+<text x="658" y="1802.125" font-size="17" fill="#334155" font-weight="normal">modelVersion: string | null</text>
+<text x="658" y="1823.375" font-size="17" fill="#334155" font-weight="normal">generatedAt: date-time</text>
+<rect x="1410" y="1620" width="450" height="235" fill="white" stroke="#94a3b8"/>
+<rect x="1410" y="1620" width="450" height="44" fill="#f3e8ff" stroke="#94a3b8"/>
+<text x="1422" y="1649.875" font-size="21" fill="#0f172a" font-weight="bold">RecommendationItem</text>
+<text x="1418" y="1723.375" font-size="17" fill="#334155" font-weight="normal">« AI dự kiến · Nguyên »</text>
+<text x="1418" y="1744.625" font-size="17" fill="#334155" font-weight="normal">movie: MovieSummary</text>
+<text x="1418" y="1765.875" font-size="17" fill="#334155" font-weight="normal">score: number</text>
+<text x="1418" y="1787.125" font-size="17" fill="#334155" font-weight="normal">reason: string</text>
+<text x="1418" y="1808.375" font-size="17" fill="#334155" font-weight="normal">score xếp hạng: 0..1</text>
+<polyline points="460,250 650,250" fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="453.0" y="235.25" font-size="14" fill="#475569" font-weight="normal">owner = JWT sub</text>
+<polyline points="460,330 550,330 550,600 650,600" fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="498.0" y="585.25" font-size="14" fill="#475569" font-weight="normal">owner = JWT sub</text>
+<polyline points="460,410 510,410 510,930 650,930" fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="478.0" y="915.25" font-size="14" fill="#475569" font-weight="normal">owner = JWT sub</text>
+<polyline points="255,455 255,1250" fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="153.0" y="837.75" font-size="14" fill="#475569" font-weight="normal">owner = JWT sub</text>
+<polyline points="1090,285 1410,285" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<text x="1148.0" y="270.25" font-size="14" fill="#475569" font-weight="normal">movie: 1 embedded</text>
+<polyline points="1090,610 1410,610" fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="1148.0" y="595.25" font-size="14" fill="#475569" font-weight="normal">movieId → id (1)</text>
+<polyline points="1090,940 1250,940 1250,710 1410,710" fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="1228.0" y="695.25" font-size="14" fill="#475569" font-weight="normal">movieId → id (1)</text>
+<polyline points="1635,770 1635,1250" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<text x="1533.0" y="995.25" font-size="14" fill="#475569" font-weight="normal">genres: 0..* embedded</text>
+<polyline points="460,1350 1410,1350" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<text x="833.0" y="1335.25" font-size="14" fill="#475569" font-weight="normal">genres: 0..* embedded</text>
+<polyline points="1090,1750 1410,1750" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<text x="1148.0" y="1735.25" font-size="14" fill="#475569" font-weight="normal">items: 0..* embedded</text>
+<polyline points="1860,1730 1885,1730 1885,670 1860,670" fill="none" stroke="#64748b" stroke-width="1.8"/>
+<text x="58" y="1936.375" font-size="17" fill="#334155" font-weight="normal">Nét liền: object/array nhúng trong JSON. Nét đứt: UUID reference hoặc ngữ cảnh owner, không phải khóa ngoại DB.</text>
+<text x="58" y="1978.375" font-size="17" fill="#334155" font-weight="normal">1 / 0..*: số object trong representation hoặc số resource được tham chiếu. Không biểu diễn lifecycle/composition của bảng.</text>
+<text x="58" y="2020.375" font-size="17" fill="#334155" font-weight="normal">Đây là trích chọn các trường phục vụ mô hình; schema đầy đủ, required/nullable và methods nằm trong OpenAPI và trang 01.</text>
+</svg>
