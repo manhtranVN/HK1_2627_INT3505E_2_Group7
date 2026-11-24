@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # 1. Stoplight Prism Mock Server
+  # Tự động đọc openapi.yaml, giả lập toàn bộ endpoints theo schema và examples
+  prism-mock:
+    image: stoplight/prism:5
+    container_name: mnp-prism-mock
+    ports:
+      - "4010:4010"
+    volumes:
+      - ../openapi/openapi.yaml:/openapi.yaml:ro
+    command: mock -h 0.0.0.0 -p 4010 /openapi.yaml
+    restart: unless-stopped
+    networks:
+      - mnp-mock-net
+
+  # 2. Swagger UI Official Container
+  # Giao diện trực quan để xem tài liệu và bấm "Try it out" test mock API
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: mnp-swagger-ui
+    ports:
+      - "8080:8080"
+    environment:
+      SWAGGER_JSON: /openapi.yaml
+      PORT: 8080
+    volumes:
+      - ../openapi/openapi.yaml:/openapi.yaml:ro
+    depends_on:
+      - prism-mock
+    restart: unless-stopped
+    networks:
+      - mnp-mock-net
+
+networks:
+  mnp-mock-net:
+    driver: bridge

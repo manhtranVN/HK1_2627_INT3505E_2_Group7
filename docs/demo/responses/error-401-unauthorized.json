@@ -1,0 +1,9 @@
+{
+  "type": "https://api.mnp.vn/errors/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Không tìm thấy Bearer access token trong header Authorization hoặc token đã hết hạn.",
+  "instance": "/api/v1/auth/me",
+  "traceId": "trace-401-auth-001",
+  "errorCode": "AUTH_TOKEN_MISSING"
+}
