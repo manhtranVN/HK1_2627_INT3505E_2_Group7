@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "movie": {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "Big Buck Bunny",
+        "slug": "big-buck-bunny-2008",
+        "releaseYear": 2008,
+        "durationMinutes": 10,
+        "posterUrl": "https://cdn.mnp.local/posters/big-buck-bunny.jpg",
+        "genres": [
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "name": "Hoạt hình",
+            "slug": "animation"
+          }
+        ],
+        "averageRating": 4.5,
+        "ratingCount": 1280,
+        "hasVideo": true,
+        "status": "published"
+      },
+      "score": 0.78,
+      "reason": "Nội dung và thể loại hoạt hình tương tự phim nguồn."
+    }
+  ],
+  "strategy": "content_based",
+  "modelVersion": "1.0.0",
+  "generatedAt": "2026-11-25T08:00:00Z"
+}

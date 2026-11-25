@@ -41,11 +41,10 @@ tags:
     description: Tra cứu, tìm kiếm, lọc và quản trị danh mục phim
   - name: Genres
     description: Tra cứu và quản trị danh mục thể loại phim
-  # Reserved tags for upcoming PRs (uncomment when merging v1.0):
   - name: Me
     description: Tương tác cá nhân hóa của người dùng (QPhong - feat/data-model-me-api)
-  # - name: Recommendations
-  #   description: Gợi ý phim theo nội dung TF-IDF + cosine (Nguyên - feat/brief-ai-plan)
+  - name: Recommendations
+    description: Gợi ý phim theo nội dung và phương án dự phòng khi thiếu dữ liệu
 
 paths:
   /health:
@@ -361,6 +360,107 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /movies/{movieId}/similar:
+    parameters:
+      - $ref: '#/components/parameters/MovieIdPath'
+    get:
+      operationId: listSimilarMovies
+      summary: Tìm phim tương tự trong danh mục công khai
+      description: |
+        Endpoint công khai. Phim nguồn phải ở trạng thái published. Trả 404 nếu phim nguồn
+        không tồn tại hoặc đã bị ẩn. Danh sách chỉ gồm phim published và loại phim nguồn.
+
+        Xếp hạng theo độ tương đồng cosine trên vector TF-IDF của nội dung phim (content_based).
+        Nếu thiếu vector của phim nguồn hoặc không có kết quả theo nội dung, xếp hạng theo mức
+        giao nhau của thể loại (genre_fallback). Nếu vẫn không có phim tương tự, trả 200 với items rỗng.
+
+        Trả tối đa limit phim khác nhau theo score giảm dần, dùng ID phim tăng dần khi bằng điểm.
+      tags:
+        - Recommendations
+      x-owner: Nguyên
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/RecommendationLimitParam'
+      responses:
+        '200':
+          description: Danh sách phim tương tự đã xếp hạng
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RecommendationResult'
+                  - type: object
+                    properties:
+                      strategy:
+                        type: string
+                        enum:
+                          - content_based
+                          - genre_fallback
+              examples:
+                contentBased:
+                  summary: Phim tương tự phim nguồn Sintel theo nội dung
+                  value:
+                    items:
+                      - movie:
+                          id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                          title: Big Buck Bunny
+                          slug: big-buck-bunny-2008
+                          releaseYear: 2008
+                          durationMinutes: 10
+                          posterUrl: https://cdn.mnp.local/posters/big-buck-bunny.jpg
+                          genres:
+                            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                              name: Hoạt hình
+                              slug: animation
+                          averageRating: 4.5
+                          ratingCount: 1280
+                          hasVideo: true
+                          status: published
+                        score: 0.78
+                        reason: Nội dung và thể loại hoạt hình tương tự phim nguồn.
+                    strategy: content_based
+                    modelVersion: '1.0.0'
+                    generatedAt: '2026-11-25T08:00:00Z'
+                genreFallback:
+                  summary: Tìm phim cùng thể loại khi thiếu dữ liệu nội dung
+                  value:
+                    items:
+                      - movie:
+                          id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                          title: Big Buck Bunny
+                          slug: big-buck-bunny-2008
+                          releaseYear: 2008
+                          durationMinutes: 10
+                          posterUrl: https://cdn.mnp.local/posters/big-buck-bunny.jpg
+                          genres:
+                            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                              name: Hoạt hình
+                              slug: animation
+                          averageRating: 4.5
+                          ratingCount: 1280
+                          hasVideo: true
+                          status: published
+                        score: 1
+                        reason: Phim có cùng thể loại Hoạt hình với phim nguồn.
+                    strategy: genre_fallback
+                    modelVersion: null
+                    generatedAt: '2026-11-25T08:00:00Z'
+                noMatches:
+                  summary: Phim nguồn công khai và không có phim tương tự
+                  value:
+                    items: []
+                    strategy: genre_fallback
+                    modelVersion: null
+                    generatedAt: '2026-11-25T08:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /genres:
     get:
       operationId: listGenres
@@ -436,9 +536,6 @@ paths:
   #   - PUT    /me/ratings/{movieId}
   #   - PUT    /me/watch-progress/{movieId}
   #   - PUT    /me/preferences/genres
-  # [Nguyên - feat/brief-ai-plan]:
-  #   - GET    /me/recommendations
-  #   - GET    /movies/{movieId}/similar
   # =========================================================================
 
   /me/favorites:
@@ -876,6 +973,127 @@ paths:
       security:
       - bearerAuth: []
 
+  /me/recommendations:
+    get:
+      operationId: getMyRecommendations
+      summary: Lấy danh sách phim gợi ý cho người dùng hiện tại
+      description: |
+        Xác định người dùng từ claim sub của JWT. Tài khoản user và admin đều nhận gợi ý cho chính mình.
+
+        Khi có đủ dữ liệu tương tác, dùng gợi ý theo nội dung (content_based).
+        Khi chưa đủ dữ liệu tương tác, ưu tiên các thể loại người dùng đã chọn (genre_fallback).
+        Dùng phim phổ biến (popular_fallback) khi không có phim khớp thể loại hoặc mô hình không khả dụng.
+
+        Chỉ trả phim published, mỗi phim xuất hiện tối đa một lần. Kết quả xếp theo score giảm dần,
+        dùng ID phim tăng dần khi bằng điểm. Có thể trả ít hơn limit, kể cả danh sách rỗng.
+      tags:
+        - Recommendations
+      x-owner: Nguyên
+      x-roles:
+        - user
+        - admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RecommendationLimitParam'
+      responses:
+        '200':
+          description: Danh sách gợi ý đã xếp hạng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResult'
+              examples:
+                personalized:
+                  summary: Gợi ý từ lịch sử tương tác
+                  value:
+                    items:
+                      - movie:
+                          id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                          title: Sintel
+                          slug: sintel-2010
+                          releaseYear: 2010
+                          durationMinutes: 15
+                          posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                          genres:
+                            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                              name: Hoạt hình
+                              slug: animation
+                          averageRating: 4.6
+                          ratingCount: 128
+                          hasVideo: true
+                          status: published
+                        score: 0.94
+                        reason: Phim có nội dung tương tự những phim bạn đã đánh giá cao.
+                    strategy: content_based
+                    modelVersion: '1.0.0'
+                    generatedAt: '2026-11-25T08:00:00Z'
+                genreFallback:
+                  summary: Người dùng mới đã chọn thể loại yêu thích
+                  value:
+                    items:
+                      - movie:
+                          id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                          title: Sintel
+                          slug: sintel-2010
+                          releaseYear: 2010
+                          durationMinutes: 15
+                          posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                          genres:
+                            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                              name: Hoạt hình
+                              slug: animation
+                          averageRating: 4.6
+                          ratingCount: 128
+                          hasVideo: true
+                          status: published
+                        score: 0.9
+                        reason: Phim thuộc thể loại Hoạt hình bạn đã chọn.
+                    strategy: genre_fallback
+                    modelVersion: null
+                    generatedAt: '2026-11-25T08:00:00Z'
+                popularFallback:
+                  summary: Gợi ý phim phổ biến khi thiếu dữ liệu cá nhân hóa
+                  value:
+                    items:
+                      - movie:
+                          id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                          title: Sintel
+                          slug: sintel-2010
+                          releaseYear: 2010
+                          durationMinutes: 15
+                          posterUrl: https://cdn.mnp.local/posters/sintel.jpg
+                          genres:
+                            - id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                              name: Hoạt hình
+                              slug: animation
+                          averageRating: 4.6
+                          ratingCount: 128
+                          hasVideo: true
+                          status: published
+                        score: 0.85
+                        reason: Phim được nhiều người xem quan tâm.
+                    strategy: popular_fallback
+                    modelVersion: null
+                    generatedAt: '2026-11-25T08:00:00Z'
+                emptyCatalog:
+                  summary: Danh mục không có phim công khai
+                  value:
+                    items: []
+                    strategy: popular_fallback
+                    modelVersion: null
+                    generatedAt: '2026-11-25T08:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -920,6 +1138,18 @@ components:
         maximum: 100
         default: 20
       example: 20
+
+    RecommendationLimitParam:
+      name: limit
+      in: query
+      required: false
+      description: Số phim gợi ý tối đa trả về (top-K)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 10
+      example: 10
 
     SearchQueryParam:
       name: q
@@ -1909,6 +2139,56 @@ components:
         items: data
         meta: meta
 
+    RecommendationResult:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - strategy
+        - modelVersion
+        - generatedAt
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/RecommendationItem'
+        strategy:
+          type: string
+          enum:
+            - content_based
+            - genre_fallback
+            - popular_fallback
+        modelVersion:
+          type: string
+          nullable: true
+          description: Phiên bản mô hình cho content_based. Giá trị null khi xếp hạng theo phương án dự phòng.
+        generatedAt:
+          type: string
+          format: date-time
+          description: Thời điểm tạo danh sách gợi ý.
+
+    RecommendationItem:
+      type: object
+      additionalProperties: false
+      required:
+        - movie
+        - score
+        - reason
+      properties:
+        movie:
+          $ref: '#/components/schemas/MovieSummary'
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Điểm xếp hạng đã chuẩn hóa riêng cho từng strategy.
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Lý do gợi ý hiển thị cho người dùng.
+
   responses:
     BadRequest:
       description: Cú pháp JSON hoặc tham số đường dẫn/truy vấn sai định dạng (HTTP 400)
@@ -2279,59 +2559,6 @@ x-qphong-review:
   rating: 1..5 in steps of 0.5, aligned with core conventions; group review pending.
   ownership: JWT sub only; no userId accepted in request.
 
-x-resource-context:
-  owner: Nguyên
-  status: planned; not part of the QPhong API changes
-  paths:
-  - /me/recommendations
-  - /movies/{movieId}/similar
-  schemas:
-    RecommendationResult:
-      type: object
-      additionalProperties: false
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/x-resource-context/schemas/RecommendationItem'
-          maxItems: 50
-        strategy:
-          type: string
-          enum:
-          - content_based
-          - genre_fallback
-          - popular_fallback
-        modelVersion:
-          type: string
-          nullable: true
-        generatedAt:
-          type: string
-          format: date-time
-      description: score is a normalized ranking score, not a star rating or probability. Fallback may have model_version=null.
-        Fewer than limit results, including [], are valid when the catalog is small.
-      required:
-      - items
-      - strategy
-      - modelVersion
-      - generatedAt
-    RecommendationItem:
-      type: object
-      additionalProperties: false
-      properties:
-        movie:
-          $ref: '#/components/schemas/MovieSummary'
-        score:
-          type: number
-          minimum: 0
-          maximum: 1
-        reason:
-          type: string
-          minLength: 1
-          maxLength: 500
-      required:
-      - movie
-      - score
-      - reason
 x-api-db-mapping:
   UserProfile:
     table: users

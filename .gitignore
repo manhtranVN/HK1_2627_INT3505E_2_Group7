@@ -166,7 +166,6 @@ desktop.ini
 # QPhong Week 12: local tooling/setup, excluded from upload
 /tools/
 /requirements-dev.txt
-/README.md
 
 # Editor, OS and draw.io recovery/backup files
 *.drawio.bkp
