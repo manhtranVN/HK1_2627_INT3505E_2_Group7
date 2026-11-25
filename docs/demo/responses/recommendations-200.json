@@ -1,23 +1,30 @@
 {
   "items": [
     {
-      "movieId": "7ca53e12-8841-4c6e-9231-1e98ab7612ef",
-      "title": "Sintel",
-      "posterUrl": "https://images.mnp.vn/posters/sintel.jpg",
-      "averageRating": 4.8,
+      "movie": {
+        "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+        "title": "Sintel",
+        "slug": "sintel-2010",
+        "releaseYear": 2010,
+        "durationMinutes": 15,
+        "posterUrl": "https://cdn.mnp.local/posters/sintel.jpg",
+        "genres": [
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "name": "Hoạt hình",
+            "slug": "animation"
+          }
+        ],
+        "averageRating": 4.6,
+        "ratingCount": 128,
+        "hasVideo": true,
+        "status": "published"
+      },
       "score": 0.94,
-      "reason": "Vì bạn yêu thích thể loại Hoạt hình và Phiêu lưu"
-    },
-    {
-      "movieId": "d9e8f7a6-b5c4-3d2e-1f0a-9b8c7d6e5f4a",
-      "title": "Tears of Steel",
-      "posterUrl": "https://images.mnp.vn/posters/tears-of-steel.jpg",
-      "averageRating": 4.3,
-      "score": 0.88,
-      "reason": "Tương tự các phim bạn vừa xem gần đây"
+      "reason": "Phim có nội dung tương tự những phim bạn đã đánh giá cao."
     }
   ],
   "strategy": "content_based",
   "modelVersion": "1.0.0",
-  "totalItems": 2
+  "generatedAt": "2026-11-25T08:00:00Z"
 }
